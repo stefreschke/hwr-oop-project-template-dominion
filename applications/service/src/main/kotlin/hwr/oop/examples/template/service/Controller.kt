@@ -1,30 +1,52 @@
 package hwr.oop.examples.template.service
 
-import hwr.oop.examples.template.service.api.TrainReadApi
-import hwr.oop.examples.template.service.api.TrainWriteApi
-import hwr.oop.examples.template.service.model.CreateTrainRequest
-import hwr.oop.examples.template.service.model.TrainCreatedResponse
-import hwr.oop.examples.template.service.model.TrainResponse
-import hwr.oop.examples.template.service.model.UpdateTrainRequest
+import hwr.oop.examples.template.service.api.GameActionApi
+import hwr.oop.examples.template.service.api.GameApi
+import hwr.oop.examples.template.service.model.*
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-class Controller : TrainWriteApi, TrainReadApi {
-	
-	override fun createTrain(createTrainRequest: @Valid CreateTrainRequest?): ResponseEntity<TrainCreatedResponse> {
+class Controller : GameApi, GameActionApi {
+	override fun getGame(gameId: String?): ResponseEntity<GameState> {
 		TODO("Not yet implemented")
 	}
 	
-	override fun updateTrain(
-		trainId: String?,
-		updateTrainRequest: @Valid UpdateTrainRequest?,
-	): ResponseEntity<TrainResponse> {
+	override fun startGame(startGameRequest: @Valid StartGameRequest?): ResponseEntity<GameCreatedResponse> {
 		TODO("Not yet implemented")
 	}
 	
-	override fun getTrain(trainId: String?): ResponseEntity<TrainResponse> {
+	override fun buyCard(
+		gameId: String?,
+		buyCardsRequest: @Valid BuyCardsRequest?,
+	): ResponseEntity<GameState> {
 		TODO("Not yet implemented")
 	}
+	
+	override fun getChoices(gameId: String?): ResponseEntity<PendingChoicesResponse> {
+		TODO("Not yet implemented")
+	}
+	
+	override fun makeChoice(
+		gameId: String?,
+		makeChoiceRequest: @Valid MakeChoiceRequest?,
+	): ResponseEntity<GameState> {
+		TODO("Not yet implemented")
+	}
+	
+	override fun playAction(
+		gameId: String?,
+		playActionRequest: @Valid PlayActionRequest?,
+	): ResponseEntity<GameState> {
+		TODO("Not yet implemented")
+	}
+	
+	override fun playTreasures(
+		gameId: String?,
+		playTreasuresRequest: @Valid PlayTreasuresRequest?,
+	): ResponseEntity<GameState> {
+		TODO("Not yet implemented")
+	}
+	
 }

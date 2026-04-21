@@ -1,31 +1,36 @@
 openapi: 3.0.3
 info:
-  title: Template Service API
-  description: API for the template service
+  title: Dominion Game API
+  description: API for managing Dominion deck-building card games
   version: 1.0.0
 servers:
   - url: http://localhost:8080
     description: Local development server
+tags:
+  - name: Game
+    description: Manage game lifecycle (create, read).
+  - name: GameAction
+    description: In-game actions performed by players during their turn.
 paths:
-  /trains:
+  /games:
     post:
-      summary: Create a new train
-      operationId: createTrain
+      summary: Start a new game
+      operationId: startGame
       tags:
-        - TrainWrite
+        - Game
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateTrainRequest'
+              $ref: '#/components/schemas/StartGameRequest'
       responses:
         '201':
-          description: Train created successfully
+          description: Game started successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TrainCreatedResponse'
+                $ref: '#/components/schemas/GameCreatedResponse'
         '400':
           description: Bad request
           content:
@@ -38,40 +43,82 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-  /trains/{trainId}:
-    post:
-      summary: Update an existing train
-      operationId: updateTrain
+  /games/{gameId}:
+    get:
+      summary: Get the current game state
+      operationId: getGame
       tags:
-        - TrainWrite
+        - Game
       parameters:
-        - name: trainId
+        - name: gameId
           in: path
           required: true
           schema:
             type: string
-          description: The unique identifier of the train to update
+          description: The unique identifier of the game
+      responses:
+        '200':
+          description: Game state retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameState'
+        '404':
+          description: Game not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /games/{gameId}/actions:
+    post:
+      summary: Play an action card from hand
+      description: >
+        The current player plays one action card from their hand into the play area.
+        If the card's effect requires player decisions or triggers further effects, one or more entries
+        are pushed onto the effectStack and must be resolved via the choices endpoint before play continues.
+      operationId: playAction
+      tags:
+        - GameAction
+      parameters:
+        - name: gameId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The unique identifier of the game
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UpdateTrainRequest'
+              $ref: '#/components/schemas/PlayActionRequest'
       responses:
         '200':
-          description: Train updated successfully
+          description: Action card played successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TrainResponse'
+                $ref: '#/components/schemas/GameState'
         '400':
-          description: Bad request
+          description: Invalid action (e.g. wrong player, card not in hand, not an action card, no actions remaining)
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '404':
-          description: Train not found
+          description: Game not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Action not allowed in current game state or phase
           content:
             application/json:
               schema:
@@ -82,27 +129,196 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-    get:
-      summary: Get train by ID
-      operationId: getTrain
+  /games/{gameId}/treasures:
+    post:
+      summary: Play treasure cards from hand
+      description: >
+        The current player plays one or more treasure cards from their hand into the play area.
+        Their coin values and effects are applied in the order given.
+        If a treasure card's effect requires choices, it is pushed onto the effectStack.
+        No further treasures or buys may be made while effectStack is non-empty.
+      operationId: playTreasures
       tags:
-        - TrainRead
+        - GameAction
       parameters:
-        - name: trainId
+        - name: gameId
           in: path
           required: true
           schema:
             type: string
-          description: The unique identifier of the train
+          description: The unique identifier of the game
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlayTreasuresRequest'
       responses:
         '200':
-          description: Train retrieved successfully
+          description: Treasure cards played successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TrainResponse'
+                $ref: '#/components/schemas/GameState'
+        '400':
+          description: Invalid request (e.g. wrong player, card not in hand, not a treasure card, effectStack non-empty)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '404':
-          description: Train not found
+          description: Game not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Action not allowed in current game state or phase
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /games/{gameId}/buys:
+    post:
+      summary: Buy cards from the supply
+      description: >
+        The current player buys zero or more cards from the supply using accumulated coins.
+        Each card's cost is deducted from coinsAvailable in sequence and the card is placed in the player's discard pile.
+        The number of entries in cardsToBuy must not exceed buysRemaining.
+        An empty cardsToBuy array is valid and signals the player is done buying.
+      operationId: buyCard
+      tags:
+        - GameAction
+      parameters:
+        - name: gameId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The unique identifier of the game
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BuyCardsRequest'
+      responses:
+        '200':
+          description: Cards bought successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameState'
+        '400':
+          description: Invalid buy (e.g. wrong player, card not in supply, insufficient coins, no buys remaining, effectStack non-empty)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Game not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Action not allowed in current game state or phase
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /games/{gameId}/choices:
+    get:
+      summary: Get open choices for the current effect
+      description: >
+        Returns the pending choices of the top effect on the effectStack (effectStack[0]).
+        If the effectStack is empty, the response contains an empty list.
+      operationId: getChoices
+      tags:
+        - GameAction
+      parameters:
+        - name: gameId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The unique identifier of the game
+      responses:
+        '200':
+          description: Open choices retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PendingChoicesResponse'
+        '404':
+          description: Game not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    post:
+      summary: Submit a response to a pending choice
+      description: >
+        The identified player submits their selection for the pending choice assigned to them in the top effect (effectStack[0]).
+        Submitting a choice removes that player's entry from effectStack[0].pendingChoices.
+        Once all pendingChoices of the top effect are resolved, the effect is applied and removed from the stack.
+        Resolving an effect may push new effects onto the front of the stack.
+        Resolving effects then continues automatically until it reaches one with non-empty pendingChoices or the stack is empty.
+      operationId: makeChoice
+      tags:
+        - GameAction
+      parameters:
+        - name: gameId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The unique identifier of the game
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MakeChoiceRequest'
+      responses:
+        '200':
+          description: Choice submitted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameState'
+        '400':
+          description: Invalid choice (e.g. wrong player, no pending choice for this player in the current effect, invalid selection count or options)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Game not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: No pending choice with that ID exists for that player
           content:
             application/json:
               schema:
@@ -115,66 +331,289 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
 components:
   schemas:
-    CreateTrainRequest:
+    CardName:
+      type: string
+      description: >
+        The name of a card.
+        Basic treasure cards: COPPER, SILVER, GOLD.
+        Basic victory cards: ESTATE, DUCHY, PROVINCE.
+        Kingdom cards are identified by their name (e.g. VILLAGE, SMITHY, MARKET, etc.).
+    ChoiceType:
+      type: string
+      description: A string token identifying the type of choice the player must make. The set of possible values is defined by the business logic.
+    TurnPhase:
+      type: string
+      description: The current phase of the active player's turn. The set of possible values and their semantics are defined by the business logic.
+    GameStatus:
+      type: string
+      description: >
+        The current status of the game.
+        Possible values: IN_PROGRESS, FINISHED.
+    SupplyPile:
+      type: object
+      description: A pile of identical cards in the supply.
+      required:
+        - cardName
+        - count
+      properties:
+        cardName:
+          $ref: '#/components/schemas/CardName'
+        count:
+          type: integer
+          description: The number of cards remaining in this supply pile
+          minimum: 0
+    PlayerState:
+      type: object
+      description: The state of a single player's deck-building area.
+      required:
+        - playerId
+        - hand
+        - playArea
+        - discardPile
+        - deckSize
+      properties:
+        playerId:
+          type: string
+          description: The unique identifier of the player
+        hand:
+          type: array
+          description: Cards currently in the player's hand
+          items:
+            $ref: '#/components/schemas/CardName'
+        playArea:
+          type: array
+          description: Cards the player has played this turn
+          items:
+            $ref: '#/components/schemas/CardName'
+        discardPile:
+          type: array
+          description: Cards in the player's discard pile (top card visible)
+          items:
+            $ref: '#/components/schemas/CardName'
+        deckSize:
+          type: integer
+          description: Number of cards remaining in the player's draw deck (contents not revealed)
+          minimum: 0
+    GameState:
       type: object
       required:
-        - trainNumber
-        - maxSpeed
-        - name
+        - gameId
+        - status
+        - currentPlayerId
+        - currentPhase
+        - actionsRemaining
+        - buysRemaining
+        - coinsAvailable
+        - supply
+        - players
+        - effectStack
       properties:
-        trainNumber:
-          type: integer
-          description: The train number
-        maxSpeed:
-          type: integer
-          description: The maximum speed of the train in km/h
-        name:
+        gameId:
           type: string
-          description: The name of the train
-    TrainCreatedResponse:
+          description: The unique identifier of the game
+        status:
+          $ref: '#/components/schemas/GameStatus'
+        currentPlayerId:
+          type: string
+          description: The player ID of the player whose turn it is
+        currentPhase:
+          $ref: '#/components/schemas/TurnPhase'
+        actionsRemaining:
+          type: integer
+          description: Number of action plays remaining for the current player this turn
+          minimum: 0
+        buysRemaining:
+          type: integer
+          description: Number of buys remaining for the current player this turn
+          minimum: 0
+        coinsAvailable:
+          type: integer
+          description: Coins available to spend this turn
+          minimum: 0
+        winnerId:
+          type: string
+          description: The player ID of the winner. Present only when status is FINISHED.
+          nullable: true
+        supply:
+          type: array
+          description: All supply piles with their remaining card counts
+          items:
+            $ref: '#/components/schemas/SupplyPile'
+        players:
+          type: array
+          description: State of all players
+          items:
+            $ref: '#/components/schemas/PlayerState'
+        effectStack:
+          type: array
+          description: >
+            Stack of card effects queued for resolution, ordered with the currently active effect at index 0.
+            Only the top effect (index 0) will have non-empty pendingChoices.
+            Once all pendingChoices of the top effect are answered, the server resolves the effect,
+            potentially pushing new effects onto the front of the stack before popping it, then moves to the next.
+            The stack is empty when no effects are pending and normal play may resume.
+          items:
+            $ref: '#/components/schemas/ActiveEffect'
+    StartGameRequest:
       type: object
       required:
-        - id
+        - playerIds
+        - kingdomCards
       properties:
-        id:
-          type: string
-          description: The unique identifier of the created train
-    UpdateTrainRequest:
+        playerIds:
+          type: array
+          description: >
+            Ordered list of player IDs joining the game.
+            Must contain between 2 and 4 players.
+          minItems: 2
+          maxItems: 4
+          items:
+            type: string
+        kingdomCards:
+          type: array
+          description: >
+            Exactly 10 kingdom card names to include in the supply for this game.
+          minItems: 10
+          maxItems: 10
+          items:
+            $ref: '#/components/schemas/CardName'
+    GameCreatedResponse:
       type: object
       required:
-        - trainNumber
-        - maxSpeed
-        - name
+        - gameId
       properties:
-        trainNumber:
-          type: integer
-          description: The train number
-        maxSpeed:
-          type: integer
-          description: The maximum speed of the train in km/h
-        name:
+        gameId:
           type: string
-          description: The name of the train
-    TrainResponse:
+          description: The unique identifier of the created game
+    PendingChoicesResponse:
       type: object
       required:
-        - id
-        - trainNumber
-        - maxSpeed
-        - name
+        - pendingChoices
       properties:
-        id:
+        pendingChoices:
+          type: array
+          description: The pending choices of the current top effect, or empty if the effectStack is empty.
+          items:
+            $ref: '#/components/schemas/PendingChoice'
+    PendingChoice:
+      type: object
+      description: A choice that must be made by a player before the game can continue.
+      required:
+        - playerId
+        - choiceType
+        - description
+        - options
+        - minSelections
+        - maxSelections
+      properties:
+        playerId:
           type: string
-          description: The unique identifier of the train
-        trainNumber:
-          type: integer
-          description: The train number
-        maxSpeed:
-          type: integer
-          description: The maximum speed of the train in km/h
-        name:
+          description: The ID of the player who must make this choice
+        choiceType:
+          $ref: '#/components/schemas/ChoiceType'
+        description:
           type: string
-          description: The name of the train
+          description: Human-readable description of what the player must decide
+        options:
+          type: array
+          description: The available options to choose from (card names or option labels)
+          items:
+            type: string
+        minSelections:
+          type: integer
+          description: Minimum number of options the player must select
+          minimum: 0
+        maxSelections:
+          type: integer
+          description: Maximum number of options the player may select
+          minimum: 0
+    ActiveEffect:
+      type: object
+      description: A card effect instance on the effectStack awaiting resolution.
+      required:
+        - sourceCard
+        - instigatingPlayerId
+        - explanation
+        - pendingChoices
+      properties:
+        sourceCard:
+          $ref: '#/components/schemas/CardName'
+          description: The card whose effect this entry represents
+        instigatingPlayerId:
+          type: string
+          description: The player whose action originally triggered this effect or effect chain
+        explanation:
+          type: string
+          description: Human-readable description of what this effect does, provided by the business logic
+        pendingChoices:
+          type: array
+          description: >
+            Choices required to resolve this effect.
+            Non-empty only for the top effect (effectStack[0]).
+            All entries must be submitted via the choices endpoint before the effect can be resolved.
+          items:
+            $ref: '#/components/schemas/PendingChoice'
+    MakeChoiceRequest:
+      type: object
+      required:
+        - playerId
+        - selectedOptions
+      properties:
+        playerId:
+          type: string
+          description: >
+            The ID of the player submitting the choice.
+            The server resolves which pending choice belongs to this player by looking up the entry
+            for this player in effectStack[0].pendingChoices.
+        selectedOptions:
+          type: array
+          description: The options selected by the player (card names or option labels)
+          items:
+            type: string
+    PlayTreasuresRequest:
+      type: object
+      required:
+        - playerId
+        - cardNames
+      properties:
+        playerId:
+          type: string
+          description: The ID of the player playing the treasure cards
+        cardNames:
+          type: array
+          description: Treasure cards from the player's hand to play, applied in the order given.
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/CardName'
+    BuyCardsRequest:
+      type: object
+      required:
+        - playerId
+        - cardsToBuy
+      properties:
+        playerId:
+          type: string
+          description: The ID of the player buying the cards
+        cardsToBuy:
+          type: array
+          description: >
+            Cards to buy from the supply, in the order they are purchased.
+            Each card's cost is deducted from coinsAvailable in sequence.
+            Must not exceed buysRemaining in length.
+            May be empty to signal the player is done buying.
+          items:
+            $ref: '#/components/schemas/CardName'
+    PlayActionRequest:
+      type: object
+      required:
+        - playerId
+        - cardName
+      properties:
+        playerId:
+          type: string
+          description: The ID of the player playing the action card
+        cardName:
+          $ref: '#/components/schemas/CardName'
     ErrorResponse:
       type: object
       required:
