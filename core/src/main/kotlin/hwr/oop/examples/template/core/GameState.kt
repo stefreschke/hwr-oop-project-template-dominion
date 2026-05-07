@@ -10,16 +10,16 @@ class GameState (private val id: Int,
 
 
     fun innitNewGame(): GameState {
-        val startingDeck = Deck(listOf(Cards.COPPER,
-            Cards.COPPER,
-            Cards.COPPER,
-            Cards.COPPER,
-            Cards.COPPER,
-            Cards.COPPER,
-            Cards.COPPER,
-            Cards.ESTATE,
-            Cards.ESTATE,
-            Cards.ESTATE))
+        val startingDeck = Deck(listOf(CardsDefinition.COPPER,
+            CardsDefinition.COPPER,
+            CardsDefinition.COPPER,
+            CardsDefinition.COPPER,
+            CardsDefinition.COPPER,
+            CardsDefinition.COPPER,
+            CardsDefinition.COPPER,
+            CardsDefinition.ESTATE,
+            CardsDefinition.ESTATE,
+            CardsDefinition.ESTATE))
         val players: List<Player> = when(this.playersCount) {
             1 -> TODO("error not implemented yet")
             2 -> listOf(Player("alpha", startingDeck), Player("beta", startingDeck))

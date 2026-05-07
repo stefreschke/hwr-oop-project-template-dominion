@@ -17,16 +17,16 @@ class DeckCreationTest {
         assertThat(gameState.players()).isNotEqualTo(5)
         for (player in gameState.players()) {
             assertThat(player.deck().cards()).containsExactlyInAnyOrder(
-                Cards.COPPER,
-                Cards.COPPER,
-                Cards.COPPER,
-                Cards.COPPER,
-                Cards.COPPER,
-                Cards.COPPER,
-                Cards.COPPER,
-                Cards.ESTATE,
-                Cards.ESTATE,
-                Cards.ESTATE
+                CardsDefinition.COPPER,
+                CardsDefinition.COPPER,
+                CardsDefinition.COPPER,
+                CardsDefinition.COPPER,
+                CardsDefinition.COPPER,
+                CardsDefinition.COPPER,
+                CardsDefinition.COPPER,
+                CardsDefinition.ESTATE,
+                CardsDefinition.ESTATE,
+                CardsDefinition.ESTATE
             )
         }
     }
