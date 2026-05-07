@@ -1,6 +1,6 @@
 package hwr.oop.examples.template.core
 
-enum class Cards (private val card: Card) {
+enum class CardsDefinition (private val card: Card) {
 
     COPPER(Card(CardType.TRESSURE, "Copper", gold = 1)),
     ESTATE(Card(CardType.POINTS, "Estate", cost = 2, points = 1)),
