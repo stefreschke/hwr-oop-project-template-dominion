@@ -10,25 +10,16 @@ class GameState (private val id: Int,
 
 
     fun innitNewGame(): GameState {
-        val startingDeck = Deck(listOf(Cards.COPPER,
-            Cards.COPPER,
-            Cards.COPPER,
-            Cards.COPPER,
-            Cards.COPPER,
-            Cards.COPPER,
-            Cards.COPPER,
-            Cards.ESTATE,
-            Cards.ESTATE,
-            Cards.ESTATE))
+        val startingDeck = Deck(
+            List(7) { Cards.COPPER } +
+                    List(3) { Cards.ESTATE }
+        )
         val players: List<Player> = when(this.playersCount) {
-            1 -> TODO("error not implemented yet")
             2 -> listOf(Player("alpha", startingDeck), Player("beta", startingDeck))
             3 -> listOf(Player("alpha", startingDeck), Player("beta", startingDeck), Player("gamma", startingDeck))
             4 -> listOf(Player("alpha", startingDeck), Player("beta", startingDeck), Player("gamma", startingDeck), Player("delta", startingDeck))
-            else -> TODO("error not implemented yet")
+            else -> throw IllegalArgumentException("game only possible with 2-4 players")
         }
-        val newGame = GameState(this.id, this.playersCount, players = players)
-        return newGame
-
+        return GameState(this.id, this.playersCount, players = players)
     }
 }

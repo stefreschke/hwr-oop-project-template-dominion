@@ -12,22 +12,22 @@ class DeckCreationTest {
         gameState = gameState.innitNewGame()
 
         //then
+        var expectedCardList = listOf(Cards.COPPER,
+                                    Cards.COPPER,
+                                    Cards.COPPER,
+                                    Cards.COPPER,
+                                    Cards.COPPER,
+                                    Cards.COPPER,
+                                    Cards.COPPER,
+                                    Cards.ESTATE,
+                                    Cards.ESTATE,
+                                    Cards.ESTATE)
+
         assertThat(gameState.id()).isEqualTo(1)
         assertThat(gameState.players()).isNotEqualTo(1)
         assertThat(gameState.players()).isNotEqualTo(5)
         for (player in gameState.players()) {
-            assertThat(player.deck().cards()).containsExactlyInAnyOrder(
-                Cards.COPPER,
-                Cards.COPPER,
-                Cards.COPPER,
-                Cards.COPPER,
-                Cards.COPPER,
-                Cards.COPPER,
-                Cards.COPPER,
-                Cards.ESTATE,
-                Cards.ESTATE,
-                Cards.ESTATE
-            )
+            assertThat(player.deck().cards()).containsExactlyInAnyOrderElementsOf(expectedCardList)
         }
     }
 }

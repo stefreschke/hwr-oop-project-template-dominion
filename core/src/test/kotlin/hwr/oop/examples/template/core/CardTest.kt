@@ -10,13 +10,13 @@ class CardTest {
 		//given
 		val actionCard = Card(CardType.ACTION, "Village", 3, 1, 2, 0, 0, 0)
 		//when
-		val type = actionCard.type()
-		val cost = actionCard.cost()
-		val draw = actionCard.draw()
-		val actions = actionCard.actions()
-		val buys = actionCard.buys()
-		val gold = actionCard.gold()
-		val points = actionCard.points()
+		val type = actionCard.type
+		val cost = actionCard.cost
+		val draw = actionCard.draw
+		val actions = actionCard.actions
+		val buys = actionCard.buys
+		val gold = actionCard.gold
+		val points = actionCard.points
 		val compare = CardType.ACTION
 		//then
 		assertThat(type).isEqualTo(CardType.ACTION)
@@ -26,7 +26,6 @@ class CardTest {
 		assertThat(buys).isEqualTo(0)
 		assertThat(gold).isEqualTo(0)
 		assertThat(points).isEqualTo(0)
-
 	}
 
 	@Test
@@ -34,8 +33,8 @@ class CardTest {
 		//given
 		val copperCard = Card(CardType.TRESSURE, "Copper", gold = 1)
 		//when
-		val type = copperCard.type()
-		val gold = copperCard.gold()
+		val type = copperCard.type
+		val gold = copperCard.gold
 		//then
 		assertThat(type).isEqualTo(CardType.TRESSURE)
 		assertThat(gold).isEqualTo(1)
