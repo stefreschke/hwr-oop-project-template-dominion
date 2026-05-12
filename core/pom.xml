@@ -58,10 +58,10 @@
         <artifactId>pitest-maven</artifactId>
         <configuration>
           <targetClasses>
-            <param>hwr.oop.examples.template.core.*</param>
+            <param>hwr.oop.*</param>
           </targetClasses>
           <targetTests>
-            <param>hwr.oop.examples.template.core.*</param>
+            <param>hwr.oop.*</param>
           </targetTests>
         </configuration>
         <dependencies>
