@@ -6,37 +6,59 @@ import org.junit.jupiter.api.Test
 class CardTest {
 
 	@Test
-	fun `create a new card`() {
+	fun `create a cards effect`() {
 		//given
-		val actionCard = Card(CardType.ACTION, "Village", 3, 1, 2, 0, 0, 0)
+		val initialState = PlayerTurnGameState(0, 0, 0, 0, 0)
+
+		val draws = 1
+		val money = 2
+		val purchases = 3
+		val actions = 4
+
+		val cardEffect = object : PlayableCardEffect {
+			override val additionalDraws: Int = draws
+			override val additionalMoney: Int = money
+			override val additionalPurchases: Int = purchases
+			override val additionalActions: Int = actions
+
+			override fun apply(playerTurnGameState: PlayerTurnGameState): PlayerTurnGameState {
+				return grantCardValues(playerTurnGameState)
+			}
+		}
+
 		//when
-		val type = actionCard.type
-		val cost = actionCard.cost
-		val draw = actionCard.draw
-		val actions = actionCard.actions
-		val buys = actionCard.buys
-		val gold = actionCard.gold
-		val points = actionCard.points
-		val compare = CardType.ACTION
+		val resultState = cardEffect.apply(initialState)
+		//result:
+		val resultStateMoney = resultState.money
+		val resultStatePoints = resultState.winningPoints
+		val resultStateDraws = resultState.draws
+		val resultStatPurchases = resultState.purchases
+		val resultStatActions = resultState.actions
+
 		//then
-		assertThat(type).isEqualTo(CardType.ACTION)
-		assertThat(cost).isEqualTo(3)
-		assertThat(draw).isEqualTo(1)
-		assertThat(actions).isEqualTo(2)
-		assertThat(buys).isEqualTo(0)
-		assertThat(gold).isEqualTo(0)
-		assertThat(points).isEqualTo(0)
+		assertThat(resultStateMoney).isEqualTo(money)
+		assertThat(resultStatePoints).isEqualTo(0)
+		assertThat(resultStateDraws).isEqualTo(draws)
+		assertThat(resultStatPurchases).isEqualTo(purchases)
+		assertThat(resultStatActions).isEqualTo(actions)
 	}
 
 	@Test
-	fun `tressure card creation`() {
+	fun `create a card`() {
 		//given
-		val copperCard = Card(CardType.TRESSURE, "Copper", gold = 1)
+		val card = object : Card  {
+			override val name: String = "New Card"
+			override val cost: Int = 42
+			override val cardEffect: CardEffect
+				get() = error("irrelevant")
+		}
+
 		//when
-		val type = copperCard.type
-		val gold = copperCard.gold
+		val name = card.name
+		val cost = card.cost
+
 		//then
-		assertThat(type).isEqualTo(CardType.TRESSURE)
-		assertThat(gold).isEqualTo(1)
+		assertThat(name).isEqualTo("New Card")
+		assertThat(cost).isEqualTo(42)
 	}
 }
