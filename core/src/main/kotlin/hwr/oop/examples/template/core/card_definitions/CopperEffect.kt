@@ -9,6 +9,6 @@ class CopperEffect: ResourceCardEffect {
     override val value: Int = 3
 
     override fun apply(playerTurnGameState: PlayerTurnGameState): PlayerTurnGameState {
-        return playerTurnGameState.copy(money = playerTurnGameState.money + value,)
+        return applyResource(playerTurnGameState)
     }
 }

@@ -5,10 +5,10 @@ import hwr.oop.examples.template.core.ResourceCardEffect
 import hwr.oop.examples.template.core.ResourceCardResourceType
 
 class EstateEffect: ResourceCardEffect {
-    override val type: ResourceCardResourceType = ResourceCardResourceType.Point
+    override val type: ResourceCardResourceType = ResourceCardResourceType.WinningPoints
     override val value: Int = 3
 
     override fun apply(playerTurnGameState: PlayerTurnGameState): PlayerTurnGameState {
-        return playerTurnGameState.copy(winningPoints = playerTurnGameState.money + value)
+        return applyResource(playerTurnGameState)
     }
 }

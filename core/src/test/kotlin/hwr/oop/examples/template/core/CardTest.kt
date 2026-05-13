@@ -2,14 +2,15 @@ package hwr.oop.examples.template.core
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 class CardTest {
+
+	val initialState = PlayerTurnGameState(0, 0, 0, 0, 0)
 
 	@Test
 	fun `create a cards effect`() {
 		//given
-		val initialState = PlayerTurnGameState(0, 0, 0, 0, 0)
-
 		val draws = 1
 		val money = 2
 		val purchases = 3
@@ -46,6 +47,7 @@ class CardTest {
 	@Test
 	fun `create a card`() {
 		//given
+
 		val card = object : Card  {
 			override val name: String = "New Card"
 			override val cost: Int = 42
@@ -60,5 +62,9 @@ class CardTest {
 		//then
 		assertThat(name).isEqualTo("New Card")
 		assertThat(cost).isEqualTo(42)
+		assertThrows<IllegalStateException> {
+			card.applyEffect(initialState)
+		}
+
 	}
 }
