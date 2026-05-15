@@ -1,11 +1,14 @@
 package hwr.oop.examples.template.core
 
-data class Card(
-    val type: CardType, //später mehrere Card Types?
-    val name: String,
-    val cost: Int = 0,
-    val draw: Int = 0,
-    val actions: Int = 0,
-    val buys: Int = 0,
-    val gold: Int = 0,
-    val points: Int = 0)
+interface Card {
+    val type: CardType
+    val name: String
+    val cost: Int
+    val draw: Int
+    val actions: Int
+    val buys: Int
+    val gold: Int
+    val points: Int
+
+    fun specialTextApplication(gameState: GameState): GameState
+}

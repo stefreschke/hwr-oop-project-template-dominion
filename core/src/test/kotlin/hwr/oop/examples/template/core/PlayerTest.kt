@@ -8,7 +8,7 @@ class PlayerTest {
 	@Test
 	fun `create a new Player`() {
 		//given
-		val player = Player("alpha", Deck(listOf(CardsDefinition.COPPER)))
+		val player = Player("alpha", Deck(listOf(Copper())))
 		//when
 		val name = player.name()
 		val remainingBuys = player.remainingBuys()

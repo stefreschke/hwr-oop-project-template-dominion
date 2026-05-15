@@ -11,23 +11,15 @@ class DeckCreationTest {
         var gameState = GameState(1, 3)
         gameState = gameState.innitNewGame()
 
-        //then
-        var expectedCardList = listOf(Cards.COPPER,
-                                    Cards.COPPER,
-                                    Cards.COPPER,
-                                    Cards.COPPER,
-                                    Cards.COPPER,
-                                    Cards.COPPER,
-                                    Cards.COPPER,
-                                    Cards.ESTATE,
-                                    Cards.ESTATE,
-                                    Cards.ESTATE)
+        //when
+        val expectedCardList = List(7) { Copper() } + List(3) { Estate() }
 
+        //then
         assertThat(gameState.id()).isEqualTo(1)
         assertThat(gameState.players()).isNotEqualTo(1)
         assertThat(gameState.players()).isNotEqualTo(5)
         for (player in gameState.players()) {
-            assertThat(player.deck().cards()).containsExactlyInAnyOrderElementsOf(expectedCardList)
+            assertThat(player.deck().cards()).containsExactlyInAnyOrderElementsOf(expectedCardList))
         }
     }
 }

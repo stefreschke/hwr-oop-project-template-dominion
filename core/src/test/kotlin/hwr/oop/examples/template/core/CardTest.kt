@@ -8,7 +8,7 @@ class CardTest {
 	@Test
 	fun `create a new card`() {
 		//given
-		val actionCard = Card(CardType.ACTION, "Village", 3, 1, 2, 0, 0, 0)
+		val actionCard = CardClass(CardType.ACTION, "Village", 3, 1, 2, 0, 0, 0)
 		//when
 		val type = actionCard.type
 		val cost = actionCard.cost
@@ -31,7 +31,7 @@ class CardTest {
 	@Test
 	fun `tressure card creation`() {
 		//given
-		val copperCard = Card(CardType.TRESSURE, "Copper", gold = 1)
+		val copperCard = CardClass(CardType.TRESSURE, "Copper", gold = 1)
 		//when
 		val type = copperCard.type
 		val gold = copperCard.gold

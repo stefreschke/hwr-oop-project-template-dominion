@@ -11,8 +11,8 @@ class GameState (private val id: Int,
 
     fun innitNewGame(): GameState {
         val startingDeck = Deck(
-            List(7) { Cards.COPPER } +
-                    List(3) { Cards.ESTATE }
+            List(7) { Copper() } +
+                    List(3) { Estate() }
         )
         val players: List<Player> = when(this.playersCount) {
             2 -> listOf(Player("alpha", startingDeck), Player("beta", startingDeck))
