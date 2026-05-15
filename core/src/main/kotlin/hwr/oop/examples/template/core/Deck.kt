@@ -1,6 +1,6 @@
 package hwr.oop.examples.template.core
 
-class Deck (val cards: List<Card>){
+class Deck (val cards: List<CardID>){
 
-    fun cards(): List<Card> = cards
+    fun cards(): List<CardID> = cards
 }

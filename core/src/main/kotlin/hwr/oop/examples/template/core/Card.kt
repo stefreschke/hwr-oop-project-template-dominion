@@ -9,6 +9,5 @@ interface Card {
     val buys: Int
     val gold: Int
     val points: Int
-
     fun specialTextApplication(gameState: GameState): GameState
 }
