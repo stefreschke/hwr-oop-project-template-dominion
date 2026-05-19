@@ -3,7 +3,7 @@ package hwr.oop.examples.template.core
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-class DeckCreationTest {
+class GameInnitTest {
 
     @Test
     fun `create starting Deck`() {
@@ -12,7 +12,7 @@ class DeckCreationTest {
         gameState = gameState.innitNewGame()
 
         //when
-        val expectedCardList = List(7) { CardID.COPPER } + List(3) { CardID.Estate }
+        val expectedCardList = List(7) { CardID.COPPER } + List(3) { CardID.ESTATE }
 
         //then
         assertThat(gameState.id()).isEqualTo(1)
