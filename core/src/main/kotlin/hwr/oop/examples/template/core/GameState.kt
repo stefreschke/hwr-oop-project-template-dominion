@@ -3,7 +3,7 @@ package hwr.oop.examples.template.core
 data class GameState (private val id: Int,
                  private val playersCount: Int,
                  private val players: List<Player> = listOf(),
-                 private val currentPlayerIndex: Int = 0) {
+                 private val currentPlayerIndex: Int = 0, private val Market: Int = 0) {
 
     //getter
     fun id():Int = id
