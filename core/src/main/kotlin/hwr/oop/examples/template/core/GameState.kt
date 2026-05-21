@@ -1,16 +1,31 @@
 package hwr.oop.examples.template.core
 
 data class GameState (private val id: Int,
-                 private val playersCount: Int,
-                 private val players: List<Player> = listOf(),
-                 private val currentPlayerIndex: Int = 0, private val Market: Int = 0) {
+                      private val playersCount: Int,
+                      private val cardShop: CardShop = CardShop(listOf()),
+                      private val players: List<Player> = listOf(),
+                      private val currentPlayerIndex: Int = 0, private val market: Int = 0) {
 
     //getter
     fun id():Int = id
-    fun players(): List<Player> = players
     fun playersCount():Int = playersCount
+    fun cardShop(): CardShop = cardShop
+    fun players(): List<Player> = players
     fun currentPlayerIndex(): Int = currentPlayerIndex
 
+    fun change(id: Int = this.id,
+               playersCount: Int = this.playersCount,
+               cardShop: CardShop = this.cardShop,
+               players: List<Player> = this.players,
+               currentPlayerIndex: Int = this.currentPlayerIndex): GameState {
+        return this.copy(
+            id = id,
+            playersCount = playersCount,
+            cardShop = cardShop,
+            players = players,
+            currentPlayerIndex = currentPlayerIndex,
+        )
+    }
     fun innitNewGame(): GameState {
 
         val startingDeck = List(7) { CardID.COPPER } + List(3) { CardID.ESTATE }
