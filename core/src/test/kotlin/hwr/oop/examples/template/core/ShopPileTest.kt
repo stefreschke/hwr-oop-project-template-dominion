@@ -35,7 +35,7 @@ class ShopPileTest {
         val shop = CardShop(listOf(ShopPile(CardID.COPPER, 50)))
         val gameState = GameState(0, 2, cardShop = shop)
         //when
-        val newGameState = gameState.cardShop().buy(gameState, CardID.COPPER)
+        val newGameState = gameState.buy(CardID.COPPER)
         //then
         assertThat(newGameState.cardShop().pileFromId(CardID.COPPER).remainingCards()).isEqualTo(49)
     }
@@ -46,9 +46,9 @@ class ShopPileTest {
         val shop = CardShop(listOf(ShopPile(CardID.COPPER, 50)))
         val gameState = GameState(0, 2, cardShop = shop)
         //when
-        val newGameState = gameState.cardShop().buy(gameState, CardID.ESTATE)
+        val newGameState = gameState.buy(CardID.ESTATE)
         //then
-       // assertThat(newGameState).isEqualTo(gameState)
+        assertThat(newGameState).isEqualTo(gameState)
         assertThat(newGameState.cardShop().pileFromId(CardID.COPPER).remainingCards()).isEqualTo(50)
 
     }

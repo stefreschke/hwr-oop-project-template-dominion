@@ -21,21 +21,20 @@ data class CardShop (private val piles: List<ShopPile>) {
     }
 
 
-    fun buy(gameState: GameState, cardToBuy: CardID): GameState {
+    fun takeCard(cardToBuy: CardID): Pair<CardShop, Boolean> {
         if(!containsPile(cardToBuy)){
-            return gameState
+            return Pair(this, false)
         }
 
         val currentPile = this.pileFromId(cardToBuy)
         if (currentPile.isEmpty()){
-            return gameState
+            return Pair(this, false)
         }
         val newPile = currentPile.buy()
         val newCardShop = this.copy(
             piles = this.piles - currentPile + newPile
         )
-        val newGameState = gameState.change(cardShop = newCardShop)
-        return newGameState
+        return Pair(newCardShop, true)
     }
 
 }

@@ -4,7 +4,8 @@ data class GameState (private val id: Int,
                       private val playersCount: Int,
                       private val cardShop: CardShop = CardShop(listOf()),
                       private val players: List<Player> = listOf(),
-                      private val currentPlayerIndex: Int = 0, private val market: Int = 0) {
+                      private val currentPlayerIndex: Int = 0,
+                      private val market: Int = 0) {
 
     //getter
     fun id():Int = id
@@ -13,7 +14,7 @@ data class GameState (private val id: Int,
     fun players(): List<Player> = players
     fun currentPlayerIndex(): Int = currentPlayerIndex
 
-    fun change(id: Int = this.id,
+    private fun change(id: Int = this.id,
                playersCount: Int = this.playersCount,
                cardShop: CardShop = this.cardShop,
                players: List<Player> = this.players,
@@ -49,5 +50,18 @@ data class GameState (private val id: Int,
 
     fun passTurn(): GameState {
         return this.copy(currentPlayerIndex = (this.currentPlayerIndex + 1) % this.playersCount)
+    }
+
+    fun buy(CardToBuy: CardID, playerIndex: Int): GameState {
+        if(this.players[playerIndex].canBuy(CardToBuy) == false) {
+            return this
+        }
+        val (newCardShop, succsess) = this.cardShop.takeCard(CardToBuy)
+        if (succsess == false) {
+            return this
+        }
+        val newPlayer = this.players[playerIndex].addToDiscard(CardToBuy)
+        val newPlayerList = this.players.mapIndexed {index, player -> if(index == playerIndex){newPlayer} else{player}}
+        return this.change(cardShop = newCardShop)
     }
 }
