@@ -27,7 +27,7 @@ class CardCycle(private val stock: List<CardID>, private val discard: List<CardI
     fun discardSize() = discard.size
 
 
-//    fun insert(cards: List<Card>): CardCycle{
+//    fun insert(cards: List<CardID>): CardCycle{
 //        return CardCycle(stock, discard + cards, hand)
 //    } WAITING FOR TEST
 

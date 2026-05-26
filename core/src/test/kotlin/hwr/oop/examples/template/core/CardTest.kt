@@ -9,21 +9,27 @@ class CardTest {
     fun createCardTest(){
         //given
         val card = object: Card{
+            override val type: CardType = CardType.TRESSURE
             override val name: String = "Card"
             override val cost: Int = 3
 
+            override val draw: Int = 0
             override val actions: Int = 2
-            override val purchases: Int = 0
+            override val buys: Int = 0
 
-            override val money: Int = 0
+            override val gold: Int = 0
             override val points: Int = 0
+
+            override fun specialTextApplication(gameState: GameState): GameState {
+                TODO("Not yet implemented")
+            }
         }
         //
         val name = card.name
         val cost = card.cost
         val additionalActions = card.actions
-        val additionalPurchases = card.purchases
-        val additionalMoney = card.money
+        val additionalPurchases = card.buys
+        val additionalMoney = card.gold
         val additionalPoints = card.points
         //then
         assertThat(name).isEqualTo("Card")
