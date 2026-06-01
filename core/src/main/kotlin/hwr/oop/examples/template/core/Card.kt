@@ -1,7 +1,7 @@
 package hwr.oop.examples.template.core
 
 interface Card {
-    val type: CardType
+    val types: List<CardType>
     val name: String
     val cost: Int
     val draw: Int
@@ -9,5 +9,5 @@ interface Card {
     val buys: Int
     val gold: Int
     val points: Int
-    fun specialTextApplication(gameState: GameState): GameState
+    //fun specialTextApplication(gameState: GameState): GameState
 }

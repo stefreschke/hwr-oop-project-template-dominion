@@ -5,24 +5,86 @@ import org.junit.jupiter.api.Test
 
 class CardCycleTest {
 
-    @Test
-    fun cardCycleTest() {
-        //given
-        val items: List<CardID> = List(4){CardID.COPPER} + List(3){CardID.ESTATE}
-        val cycle = CardCycle(items)
+    private val _copperCount = 4
+    private val _estateCount = 3
+    private val _totalCount = _copperCount + _estateCount
 
-        //when
+    private val _items: List<CardID> = List(_copperCount){CardID.COPPER} + List(_estateCount){CardID.ESTATE}
+    private val _cycle = CardCycle(_items)
+
+    @Test
+    fun drawTest() {
+        //given
         val count = 5
-        val draw = cycle.draw(count)
+        //when
+        val draw = _cycle.draw(count)
         val hand = draw.handSize()
         val discardResult = draw.discard()
-        val dSize = discardResult.discardSize()
-        val sSize = discardResult.stockSize()
-
+        val discardSize = discardResult.discardSize()
+        val stockSize = discardResult.stockSize()
         //then
         assertThat(hand).isEqualTo(count)
-        assertThat(dSize).isEqualTo(count)
-        assertThat(sSize).isEqualTo(7 - count)
+        assertThat(discardSize).isEqualTo(count)
+        assertThat(stockSize).isEqualTo(_totalCount - count)
+    }
+
+    @Test
+    fun `drawing more than available results in all available`(){
+        //given
+        val count = _totalCount + 1
+        //when
+        val draw = _cycle.draw(count)
+        val stockSize = draw.stockSize()
+        val handSize = draw.handSize()
+        //then
+        val availableCount = _cycle.stockSize() + _cycle.discardSize()
+        assertThat(stockSize).isEqualTo(0)
+        assertThat(handSize).isEqualTo(availableCount)
+    }
+
+    @Test
+    fun `drawing with less then asked in stock shuffles discard`(){
+        //given
+        val emptyStock = _cycle.draw(_totalCount)
+        val discard = emptyStock.discard()
+        val count = 1
+        //when
+        val draw = discard.draw(count)
+        val handSize = draw.handSize()
+        val stockSize = draw.stockSize()
+        val discardSize = draw.discardSize()
+        //then
+        assertThat(handSize).isEqualTo(count)
+        assertThat(stockSize).isEqualTo(_totalCount - count)
+        assertThat(discardSize).isEqualTo(0)
+    }
+
+    @Test
+    fun discardTest(){
+        //given
+        val emptyStock = _cycle.draw(_totalCount)
+        val discard = emptyStock.discard()
+        //when
+        val handSize = discard.handSize()
+        val usedSize = discard.usedSize()
+        val discardSize = discard.discardSize()
+        //then
+        assertThat(handSize).isEqualTo(0)
+        assertThat(usedSize).isEqualTo(0)
+        assertThat(discardSize).isEqualTo(_totalCount)
+    }
+
+    @Test
+    fun turnStateTest(){
+
+    }
+
+    @Test
+    fun `existing card can be played`(){
+        //given
+        val state = _cycle.state()
+        //when
+
     }
 
 }

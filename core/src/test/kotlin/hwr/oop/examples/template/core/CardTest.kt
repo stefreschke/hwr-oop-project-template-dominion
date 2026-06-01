@@ -9,7 +9,7 @@ class CardTest {
     fun createCardTest(){
         //given
         val card = object: Card{
-            override val type: CardType = CardType.TRESSURE
+            override val types: List<CardType> = listOf(CardType.TRESSURE)
             override val name: String = "Card"
             override val cost: Int = 3
 
@@ -19,11 +19,8 @@ class CardTest {
 
             override val gold: Int = 0
             override val points: Int = 0
-
-            override fun specialTextApplication(gameState: GameState): GameState {
-                TODO("Not yet implemented")
-            }
         }
+
         //
         val name = card.name
         val cost = card.cost

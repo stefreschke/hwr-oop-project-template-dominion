@@ -1,7 +1,7 @@
 package hwr.oop.examples.template.core
 
 class Estate: Card{
-    override val type: CardType = CardType.POINTS
+    override val types: List<CardType> = listOf(CardType.POINTS)
     override val name: String = "estate"
     override val cost: Int = 2
     override val draw: Int = 0
@@ -10,5 +10,5 @@ class Estate: Card{
     override val gold: Int = 0
     override val points: Int = 1
 
-    override fun specialTextApplication(gameState: GameState): GameState = gameState
+    //override fun specialTextApplication(gameState: GameState): GameState = gameState
 }
