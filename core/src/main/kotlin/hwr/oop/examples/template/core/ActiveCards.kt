@@ -1,13 +1,13 @@
 package hwr.oop.examples.template.core
 
-class TurnState(val hand: List<CardID> = emptyList(), val used: List<CardID> = emptyList()) {
+class ActiveCards(val hand: List<CardID> = emptyList(), val used: List<CardID> = emptyList()) {
     fun playableCards(): List<CardID> {
         return hand.filter { it.isPlayable() }
     }
 
-    fun play(id: CardID): TurnState {
+    fun play(id: CardID): ActiveCards {
         if(hand.contains(id)) {
-            return TurnState(removeCard(id), used + id)
+            return ActiveCards(removeCard(id), used + id)
         }
 
         return this

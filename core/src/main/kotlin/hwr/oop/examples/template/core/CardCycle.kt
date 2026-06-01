@@ -1,6 +1,6 @@
 package hwr.oop.examples.template.core
 
-class CardCycle(private val stock: List<CardID>, private val discard: List<CardID> = emptyList(), private val hand: List<CardID> = emptyList(), private val used: List<CardID> = emptyList()) {
+class CardCycle(private val stock: List<CardID> = emptyList(), private val discard: List<CardID> = emptyList(), private val hand: List<CardID> = emptyList(), private val used: List<CardID> = emptyList()) {
     fun discard(): CardCycle {
         return CardCycle(stock, discardedCards())
     }
@@ -17,7 +17,7 @@ class CardCycle(private val stock: List<CardID>, private val discard: List<CardI
         val missing = remaining * -1
         if (discard.size < missing) {
             return drawAsManyAsPossible(drawn)
-        } // this means the player has fewer cards then he is trying to draw which IS a valid case
+        }
 
         return reshuffleAndDraw(drawn, missing)
     }
@@ -31,14 +31,14 @@ class CardCycle(private val stock: List<CardID>, private val discard: List<CardI
 
     private fun drawAsManyAsPossible(drawn: List<CardID>): CardCycle {
         return CardCycle(emptyList(), emptyList(), drawnCards(drawn) + discard, used)
-    }
+    } // this means the player has fewer cards then he is trying to draw which IS a valid case
 
     private fun reshuffleAndDraw(drawn: List<CardID>, missing: Int): CardCycle{
         val refill = CardCycle(discard.shuffled(), emptyList(), drawnCards(drawn))
         return refill.draw(missing)
     }
 
-    fun state() = TurnState(hand, used)
+    fun extractActiveCards() = ActiveCards(hand, used)
     fun insertTurnState(hand: List<CardID>, used: List<CardID>): CardCycle {
         return CardCycle(stock, discard, hand, used)
     }

@@ -3,7 +3,7 @@ package hwr.oop.examples.template.core
 class Market(private val piles: Set<Pile>, private val emptyPiles: Int = 0) {
     fun gameOver(required: Int) = emptyPiles >= required
 
-    fun purchase(activePlayer: PlayerTurn, card: CardID): PurchaseResult {
+    fun purchase(activePlayer: ActivePlayer, card: CardID): PurchaseResult {
         val pile = piles.find { it.card == card }
         if(pile == null){
             return PurchaseResult.Failure("no such pile")
@@ -16,7 +16,7 @@ class Market(private val piles: Set<Pile>, private val emptyPiles: Int = 0) {
         return PurchaseResult.Failure("not enough money")
     }
 
-    private fun draw(pile: Pile, activePlayer: PlayerTurn): PurchaseResult {
+    private fun draw(pile: Pile, activePlayer: ActivePlayer): PurchaseResult {
         val pileAfterDraw = pile.draw()
         if(pileAfterDraw.isEmpty()){
             return PurchaseResult.Success(removePile(pile), activePlayer.purchase(pile.card, pile.price))

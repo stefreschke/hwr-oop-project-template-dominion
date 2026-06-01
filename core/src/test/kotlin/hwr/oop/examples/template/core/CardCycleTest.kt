@@ -82,7 +82,7 @@ class CardCycleTest {
     @Test
     fun `existing card can be played`(){
         //given
-        val state = _cycle.state()
+        val state = _cycle.extractActiveCards()
         //when
 
     }
