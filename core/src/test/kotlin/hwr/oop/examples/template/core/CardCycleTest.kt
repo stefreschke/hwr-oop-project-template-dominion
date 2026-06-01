@@ -10,7 +10,7 @@ class CardCycleTest {
     private val _totalCount = _copperCount + _estateCount
 
     private val _items: List<CardID> = List(_copperCount){CardID.COPPER} + List(_estateCount){CardID.ESTATE}
-    private val _cycle = CardCycle(_items)
+    private val _cycle = PlayerCards(_items)
 
     @Test
     fun drawTest() {
@@ -73,18 +73,4 @@ class CardCycleTest {
         assertThat(usedSize).isEqualTo(0)
         assertThat(discardSize).isEqualTo(_totalCount)
     }
-
-    @Test
-    fun turnStateTest(){
-
-    }
-
-    @Test
-    fun `existing card can be played`(){
-        //given
-        val state = _cycle.extractActiveCards()
-        //when
-
-    }
-
 }

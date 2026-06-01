@@ -18,7 +18,7 @@ class ActiveCards(val hand: List<CardID> = emptyList(), val used: List<CardID> =
         return hand.take(idx) + hand.drop(idx + 1)
     }
 
-    fun update(cycle: CardCycle): CardCycle {
+    fun update(cycle: PlayerCards): PlayerCards {
         return cycle.insertTurnState(hand, used)
     }
 }
