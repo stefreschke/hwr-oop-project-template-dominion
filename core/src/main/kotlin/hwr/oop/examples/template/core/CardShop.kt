@@ -25,7 +25,6 @@ data class CardShop (private val piles: List<ShopPile>) {
         if(!containsPile(cardToBuy)){
             return Pair(this, false)
         }
-
         val currentPile = this.pileFromId(cardToBuy)
         if (currentPile.isEmpty()){
             return Pair(this, false)

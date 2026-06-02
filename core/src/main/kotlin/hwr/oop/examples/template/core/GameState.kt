@@ -53,15 +53,15 @@ data class GameState (private val id: Int,
     }
 
     fun buy(CardToBuy: CardID, playerIndex: Int): GameState {
-        if(this.players[playerIndex].canBuy(CardToBuy) == false) {
+//        if(!this.players[playerIndex].canBuy(CardToBuy)) {
+//            return this
+//        }
+        val (newCardShop, success) = this.cardShop.takeCard(CardToBuy)
+        if (!success) {
             return this
         }
-        val (newCardShop, succsess) = this.cardShop.takeCard(CardToBuy)
-        if (succsess == false) {
-            return this
-        }
-        val newPlayer = this.players[playerIndex].addToDiscard(CardToBuy)
-        val newPlayerList = this.players.mapIndexed {index, player -> if(index == playerIndex){newPlayer} else{player}}
+//        val newPlayer = this.players[playerIndex].addToDiscard(CardToBuy)
+//        val newPlayerList = this.players.mapIndexed {index, player -> if(index == playerIndex){newPlayer} else{player}}
         return this.change(cardShop = newCardShop)
     }
 }
