@@ -19,7 +19,7 @@ class CardCycleTest {
         //when
         val draw = _cycle.draw(count)
         val hand = draw.handSize()
-        val discardResult = draw.discard()
+        val discardResult = draw.endTurn()
         val discardSize = discardResult.discardSize()
         val stockSize = discardResult.stockSize()
         //then
@@ -46,7 +46,7 @@ class CardCycleTest {
     fun `drawing with less then asked in stock shuffles discard`(){
         //given
         val emptyStock = _cycle.draw(_totalCount)
-        val discard = emptyStock.discard()
+        val discard = emptyStock.endTurn()
         val count = 1
         //when
         val draw = discard.draw(count)
@@ -63,7 +63,7 @@ class CardCycleTest {
     fun discardTest(){
         //given
         val emptyStock = _cycle.draw(_totalCount)
-        val discard = emptyStock.discard()
+        val discard = emptyStock.endTurn()
         //when
         val handSize = discard.handSize()
         val usedSize = discard.usedSize()

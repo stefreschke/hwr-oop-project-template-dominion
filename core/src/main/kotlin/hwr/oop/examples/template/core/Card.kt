@@ -7,13 +7,21 @@ enum class Card (private val card: CardDefinition) {
 
     fun isPlayable(): Boolean {
         return card.types.contains(CardType.ACTION) ||
-                card.types.contains(CardType.TRESSURE)
+                card.types.contains(CardType.TREASURE)
     }
 
     fun play(currentStats: PlayerStats, currentCards: PlayerCards, state: GameState): PlayResult {
         val stats = applyStats(currentStats)
         val cardsAfterDraw = draw(currentCards)
-        return card.action(stats, cardsAfterDraw, state)
+
+        val context = GameContext(stats, consumeFrom(cardsAfterDraw), state)
+        return card.action(context)
+    }
+
+    private fun consumeFrom(playerCards: PlayerCards): PlayerCards {
+        val activeCards = playerCards.extractActiveCards()
+        val cardsAfterConsuming = activeCards.consume(this)
+        return cardsAfterConsuming.update(playerCards)
     }
 
     private fun applyStats(stats: PlayerStats): PlayerStats {

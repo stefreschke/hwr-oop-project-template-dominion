@@ -10,8 +10,9 @@ interface CardDefinition {
     val gold: Int
     val points: Int
 
-    fun action(stats: PlayerStats, cards: PlayerCards, state: GameState): PlayResult{
-        val player = ActivePlayer(stats, cards)
+    fun action(context: GameContext): PlayResult{
+        val state = context.state
+        val player = context.player()
         return PlayResult(state, player)
     }
 }

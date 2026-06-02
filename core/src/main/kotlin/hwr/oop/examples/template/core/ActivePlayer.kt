@@ -26,7 +26,7 @@ class ActivePlayer(
     }
 
     fun end(): PlayerCards {
-        return cards.discard()
+        return cards.endTurn()
     }
 
 }
