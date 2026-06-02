@@ -1,6 +1,6 @@
 package hwr.oop.examples.template.core
 
-class Copper: Card {
+class Copper: CardDefinition {
     override val types: List<CardType> = listOf(CardType.TRESSURE)
     override val name: String = "copper"
     override val cost: Int = 0

@@ -3,33 +3,37 @@ package hwr.oop.examples.template.core
 class Market(private val piles: Set<Pile>, private val emptyPiles: Int = 0) {
     fun emptyPiles(required: Int) = emptyPiles >= required
 
-    fun purchase(activePlayer: ActivePlayer, card: CardID): PurchaseResult {
+    fun piles(predicate: (Card) -> Boolean) = piles.filter{ predicate(it.card) }
+
+    fun purchase(activePlayer: ActivePlayer, card: Card): PurchaseResult {
         val pile = piles.find { it.isType(card) }
         if(pile == null){
-            return PurchaseResult.Failure("no such pile")
+            throw PurchaseException("no such pile")
         }
 
         if(activePlayer.canAfford(card.cost())){
-            return draw(pile, activePlayer)
+            val playerAfterDraw = activePlayer.purchase(pile.card)
+            return PurchaseResult(draw(pile), playerAfterDraw)
         }
 
-        return PurchaseResult.Failure("not enough money")
+        throw PurchaseException("not enough money")
     }
 
-    private fun draw(pile: Pile, activePlayer: ActivePlayer): PurchaseResult {
+    fun draw(pile: Pile): Market {
         val pileAfterDraw = pile.draw()
+
         if(pileAfterDraw.isEmpty()){
-            return PurchaseResult.Success(removePile(pile), activePlayer.purchase(pile.card))
+            return removePile(pile)
         }
 
-        return PurchaseResult.Success(replacePile(pile, pileAfterDraw), activePlayer.purchase(pile.card))
+        return replacePile(pile, pileAfterDraw)
     }
 
     private fun removePile(pile: Pile): Market{
         return Market(piles - pile, emptyPiles + 1)
     }
 
-    private fun replacePile(pile: Pile, newPile: Pile): Market{
+    private fun replacePile(pile: Pile, newPile: Pile): Market {
         return Market(piles - pile + newPile)
     }
 }

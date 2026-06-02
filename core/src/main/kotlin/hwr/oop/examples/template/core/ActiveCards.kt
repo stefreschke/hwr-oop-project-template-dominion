@@ -1,19 +1,19 @@
 package hwr.oop.examples.template.core
 
-class ActiveCards(val hand: List<CardID> = emptyList(), val used: List<CardID> = emptyList()) {
-    fun playableCards(): List<CardID> {
+class ActiveCards(private val hand: List<Card> = emptyList(), private val used: List<Card> = emptyList()) {
+    fun playableCards(): List<Card> {
         return hand.filter { it.isPlayable() }
     }
 
-    fun play(id: CardID): ActiveCards {
-        if(hand.contains(id)) {
-            return ActiveCards(removeCard(id), used + id)
+    fun consume(card: Card): ActiveCards {
+        if(hand.contains(card)) {
+            return ActiveCards(removeCard(card), used + card)
         }
 
         return this
     }
 
-    private fun removeCard(id: CardID): List<CardID> {
+    private fun removeCard(id: Card): List<Card> {
         val idx = hand.indexOf(id)
         return hand.take(idx) + hand.drop(idx + 1)
     }

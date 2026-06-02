@@ -1,42 +1,24 @@
 package hwr.oop.examples.template.core
 
-class Game(private val market: Market, private val activePlayer: ActivePlayer, private val inactivePlayers: List<PlayerCards>) {
+class Game(private val state: GameState, private val activePlayer: ActivePlayer) {
+
+    private val initialStats = PlayerStats(1, 1, 0)
 
     fun next(): Game{
-        return Game(market, player(inactivePlayers.first()), inactivePlayers.drop(1) + activePlayer.end())
+        return Game(state.nextState(activePlayer), initPlayer(state.nextPlayer()))
     }
 
-    private fun player(cards: PlayerCards): ActivePlayer {
-        return ActivePlayer(1, 1, 0, cards)
+    private fun initPlayer(cards: PlayerCards): ActivePlayer {
+        return ActivePlayer(initialStats, cards)
     }
 
-    fun play(card: CardID): Game {
-        return when(val result = activePlayer.play(card, inactivePlayers)) {
-            is PlayResult.Success -> {
-                Game(market, result.activePlayer, result.players)
-            }
-
-            is PlayResult.Failure -> {
-                throw UnplayableCardException(card)
-            }
-        }
+    fun play(card: Card): Game {
+        val result = activePlayer.play(card, state)
+        return Game(result.state, result.activePlayer)
     }
 
-    fun purchase(card: CardID): Game{
-        return when(val result = market.purchase(activePlayer, card)) {
-            is PurchaseResult.Success -> {
-                Game(result.market, result.player, inactivePlayers)
-            }
-
-            is PurchaseResult.Failure -> {
-                throw PurchaseException(result.reason)
-            }
-
-            else -> throw IllegalArgumentException("result unsupported")
-        }
+    fun purchase(card: Card): Game{
+        return state.purchase(activePlayer, card)
     }
-
-    private class UnplayableCardException(card: CardID) : Exception(card.unplayableErrorDescription())
-    private class PurchaseException(message: String): Exception(message)
 
 }

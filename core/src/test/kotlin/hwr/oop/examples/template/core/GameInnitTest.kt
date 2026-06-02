@@ -12,7 +12,7 @@ class GameInnitTest {
         gameState = gameState.innitNewGame()
 
         //when
-        val expectedCardList = List(7) { CardID.COPPER } + List(3) { CardID.ESTATE }
+        val expectedCardList = List(7) { Card.COPPER } + List(3) { Card.ESTATE }
 
         //then
         assertThat(gameState.id()).isEqualTo(1)

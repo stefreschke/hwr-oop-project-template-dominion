@@ -1,6 +1,6 @@
 package hwr.oop.examples.template.core
 
-class Estate: Card{
+class Estate: CardDefinition{
     override val types: List<CardType> = listOf(CardType.POINTS)
     override val name: String = "estate"
     override val cost: Int = 2

@@ -9,7 +9,7 @@ class CardCycleTest {
     private val _estateCount = 3
     private val _totalCount = _copperCount + _estateCount
 
-    private val _items: List<CardID> = List(_copperCount){CardID.COPPER} + List(_estateCount){CardID.ESTATE}
+    private val _items: List<Card> = List(_copperCount){Card.COPPER} + List(_estateCount){Card.ESTATE}
     private val _cycle = PlayerCards(_items)
 
     @Test
