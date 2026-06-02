@@ -6,6 +6,6 @@ class GameContext(
     val state: GameState
 ) {
 
-    fun player() = ActivePlayer(stats, cards)
+    fun player() = ActivePlayer(cards, stats)
 
 }

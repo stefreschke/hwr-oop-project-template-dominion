@@ -1,8 +1,11 @@
 package hwr.oop.examples.template.core
 
+private val initialStats = PlayerStats(1, 1, 0)
+
 class ActivePlayer(
-    private val stats: PlayerStats,
-    private val cards: PlayerCards = PlayerCards()) {
+    internal val cards: PlayerCards = PlayerCards(),
+    internal val stats: PlayerStats = initialStats)
+{
     fun canDoAction() = stats.actions > 0
     fun canDoPurchase() = stats.purchases > 0
 
@@ -19,13 +22,13 @@ class ActivePlayer(
     fun purchase(card: Card): ActivePlayer {
         val cost = card.cost()
         if(canAfford(cost)){
-            return ActivePlayer(stats.change(0, -1, -cost), cards.insert(card))
+            return ActivePlayer(cards.insert(card), stats.change(0, -1, -cost))
         }
 
         return this
     }
 
-    fun end(): PlayerCards {
+    fun endTurn(): PlayerCards {
         return cards.endTurn()
     }
 

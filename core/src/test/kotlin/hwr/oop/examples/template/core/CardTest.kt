@@ -9,7 +9,7 @@ class CardTest {
     fun createCardTest(){
         //given
         val cardDefinition = object: CardDefinition{
-            override val types: List<CardType> = listOf(CardType.TRESSURE)
+            override val types: List<CardType> = listOf(CardType.TREASURE)
             override val name: String = "CardDefinition"
             override val cost: Int = 3
 

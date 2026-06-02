@@ -2,7 +2,7 @@ package hwr.oop.examples.template.core
 
 data class GameState(val market: Market, val players: List<PlayerCards>){
     fun nextState(activePlayer: ActivePlayer): GameState{
-        return GameState(market, players.drop(1) + activePlayer.end())
+        return GameState(market, players.drop(1) + activePlayer.endTurn())
     }
 
     fun nextPlayer(): PlayerCards {
