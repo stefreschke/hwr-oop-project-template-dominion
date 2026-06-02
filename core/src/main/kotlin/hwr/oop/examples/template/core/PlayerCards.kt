@@ -8,7 +8,7 @@ class PlayerCards(private val stock: List<Card> = initialStock,
                   private val used: List<Card> = emptyList())
 {
 
-    fun discard(): PlayerCards {
+    fun endTurn(): PlayerCards {
         return PlayerCards(stock, discardedCards())
     }
 
@@ -45,7 +45,7 @@ class PlayerCards(private val stock: List<Card> = initialStock,
     } // this means the player has fewer cards then he is trying to draw which IS a valid case
 
     private fun reshuffleAndDraw(drawn: List<Card>, missing: Int): PlayerCards{
-        val refill = PlayerCards(discard.shuffled(), emptyList(), drawnCards(drawn))
+        val refill = PlayerCards(discard.shuffled(), emptyList(), drawnCards(drawn), used)
         return refill.draw(missing)
     }
 
