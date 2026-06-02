@@ -23,7 +23,7 @@ class Game(private val market: Market, private val activePlayer: ActivePlayer, p
     }
 
     fun purchase(card: CardID): Game{
-        return when(val result = market.purchase(activePlayer, card)){
+        return when(val result = market.purchase(activePlayer, card)) {
             is PurchaseResult.Success -> {
                 Game(result.market, result.player, inactivePlayers)
             }
