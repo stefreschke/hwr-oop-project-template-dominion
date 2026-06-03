@@ -1,5 +1,7 @@
 package hwr.oop.examples.template.service
 
+import hwr.oop.examples.template.core.DominionPersistence
+import hwr.oop.examples.template.core.GameInstance
 import hwr.oop.examples.template.service.api.GameActionApi
 import hwr.oop.examples.template.service.api.GameApi
 import hwr.oop.examples.template.service.model.*
@@ -8,13 +10,27 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-class Controller : GameApi, GameActionApi {
+class Controller(
+	val persistence: DominionPersistence
+) : GameApi, GameActionApi {
+
 	override fun getGame(gameId: String?): ResponseEntity<GameState> {
-		TODO("Not yet implemented")
+		if(gameId == null) {
+			return ResponseEntity.notFound().build()
+		}
+
+		val game = persistence.load(gameId)
+		return ResponseEntity.ok(map(game))
 	}
-	
+
+	private fun map(game: GameInstance): GameState {
+		return GameState()
+	}
+
 	override fun startGame(startGameRequest: @Valid StartGameRequest?): ResponseEntity<GameCreatedResponse> {
-		TODO("Not yet implemented")
+		val game = GameInstance()
+		persistence.save(game)
+		return ResponseEntity.ok(GameCreatedResponse(game.id))
 	}
 	
 	override fun buyCard(

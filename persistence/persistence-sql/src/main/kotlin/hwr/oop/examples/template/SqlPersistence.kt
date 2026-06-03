@@ -1,6 +1,8 @@
 package hwr.oop.examples.template
 
 import com.zaxxer.hikari.HikariDataSource
+import hwr.oop.examples.template.core.DominionPersistence
+import hwr.oop.examples.template.core.GameInstance
 import liquibase.Liquibase
 import liquibase.Scope
 import liquibase.database.DatabaseFactory
@@ -11,7 +13,7 @@ import liquibase.ui.LoggerUIService
 import org.jetbrains.exposed.v1.jdbc.Database
 import javax.sql.DataSource
 
-class SqlPersistence(private val dataSource: DataSource) {
+class SqlPersistence(private val dataSource: DataSource) : DominionPersistence {
 	
 	constructor(jdbcUrl: String, username: String, password: String) : this(
 		HikariDataSource().apply {
@@ -44,6 +46,14 @@ class SqlPersistence(private val dataSource: DataSource) {
 			}
 		}
 	}
-	
+
+	override fun load(gameId: String): GameInstance {
+		TODO("Not yet implemented")
+	}
+
+	override fun save(game: GameInstance) {
+		TODO("Not yet implemented")
+	}
+
 }
 
