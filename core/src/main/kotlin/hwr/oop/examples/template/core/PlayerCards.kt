@@ -3,7 +3,7 @@ package hwr.oop.examples.template.core
 val defaultInitialStock = List(4){ Card.COPPER } + List(3){ Card.ESTATE }
 
 class PlayerCards(private val stock: List<Card> = defaultInitialStock,
-                  private val discard: List<Card> = emptyList(),
+                  internal val discard: List<Card> = emptyList(),
                   internal val hand: List<Card> = emptyList(),
                   internal val used: List<Card> = emptyList())
 {
@@ -48,14 +48,18 @@ class PlayerCards(private val stock: List<Card> = defaultInitialStock,
         return refill.draw(missing)
     }
 
-    fun extractActiveCards() = ActiveCards(hand, used)
-    fun insertTurnState(hand: List<Card>, used: List<Card>): PlayerCards {
-        return PlayerCards(stock, discard, hand, used)
+    fun use(card: Card): PlayerCards {
+        require(hand.contains(card))
+        return PlayerCards(stock, discard, hand - card, used + card)
     }
 
    fun insert(card: Card): PlayerCards {
        return PlayerCards(stock, discard, hand, used + card)
    }
+
+    fun inHand(card: Card): Boolean {
+        return hand.contains(card)
+    }
 
     fun handSize() = hand.size
     fun usedSize() = used.size
