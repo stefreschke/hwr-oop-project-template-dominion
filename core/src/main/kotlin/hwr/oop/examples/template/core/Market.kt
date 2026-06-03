@@ -6,20 +6,11 @@ class Market(internal val piles: Set<Pile>, private val emptyPiles: Int = 0) {
     fun piles(predicate: (Card) -> Boolean) = piles.filter{ predicate(it.card) }
 
     fun purchase(activePlayer: ActivePlayer, card: Card): PurchaseResult {
-        val pile = piles.find { it.isType(card) }
-        if(pile == null){
-            throw PurchaseException("no such pile")
-        }
-
-        if(activePlayer.canAfford(card.cost())){
-            val playerAfterDraw = activePlayer.purchase(pile.card)
-            return PurchaseResult(draw(pile), playerAfterDraw)
-        }
-
-        throw PurchaseException("not enough money")
+        val pile = piles.firstOrNull() { it.isType(card) } ?: throw PurchaseException("no such pile")
+        return PurchaseResult(drawFrom(pile), activePlayer.purchase(pile.card))
     }
 
-    fun draw(pile: Pile): Market {
+    fun drawFrom(pile: Pile): Market {
         val pileAfterDraw = pile.draw()
 
         if(pileAfterDraw.isEmpty()){

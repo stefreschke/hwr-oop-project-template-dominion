@@ -3,7 +3,7 @@ package hwr.oop.examples.template.core
 private val initialStats = Stats(1, 1, 0)
 
 class ActivePlayer(
-    private val player: Player,
+    internal val player: Player,
     internal val stats: Stats = initialStats)
 {
     fun actions() = stats.actions
@@ -13,22 +13,21 @@ class ActivePlayer(
     fun id() = player.id
 
     fun play(card: Card, game: GameState): PlayResult {
-        if(card.isPlayable()) {
+        if(player.holds(card)) {
             return card.play(player, stats, game)
         }
 
-        throw UnplayableCardException(card)
+        throw CardNotInHandException(card)
     }
 
     fun canAfford(cost: Int) = stats.money > cost
 
     fun purchase(card: Card): ActivePlayer {
-        val cost = card.cost()
-        if(canAfford(cost)){
-            return ActivePlayer(player.insert(card), stats.change(0, -1, -cost))
+        if(canAfford(card.cost())){
+            return ActivePlayer(player.insert(card), stats.change(0, -1, -card.cost()))
         }
 
-        return this
+        throw PurchaseException("not enough money")
     }
 
     fun endTurn(): Player {
