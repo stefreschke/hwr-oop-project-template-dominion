@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test
 class MarketPurchaseTest {
 
     val _player = ActivePlayer()
-    val _richPlayer = ActivePlayer(PlayerCards(), PlayerStats(1, 1, 10))
+    val _richPlayer = ActivePlayer(PlayerCards(), Stats(1, 1, 10))
 
     @Test
     fun `returns only piles matching predicate`() {

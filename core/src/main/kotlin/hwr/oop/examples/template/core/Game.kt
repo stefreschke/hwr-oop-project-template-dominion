@@ -2,12 +2,14 @@ package hwr.oop.examples.template.core
 
 class Game(private val state: GameState, internal val activePlayer: ActivePlayer) {
 
+    fun piles() = state.piles()
+
     fun next(): Game{
         return Game(state.nextState(activePlayer), initPlayer(state.nextPlayer()))
     }
 
-    private fun initPlayer(cards: PlayerCards): ActivePlayer {
-        return ActivePlayer(cards)
+    private fun initPlayer(player: Player): ActivePlayer {
+        return ActivePlayer(player)
     }
 
     fun play(card: Card): Game {

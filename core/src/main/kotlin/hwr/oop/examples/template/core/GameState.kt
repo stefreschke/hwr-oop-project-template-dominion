@@ -1,11 +1,14 @@
 package hwr.oop.examples.template.core
 
-data class GameState(val market: Market, val players: List<PlayerCards>){
+data class GameState(val market: Market, val players: List<Player>){
+
+    fun piles() = market.piles
+
     fun nextState(activePlayer: ActivePlayer): GameState{
         return GameState(market, players.drop(1) + activePlayer.endTurn())
     }
 
-    fun nextPlayer(): PlayerCards {
+    fun nextPlayer(): Player {
         return players[0]
     }
 
@@ -14,5 +17,4 @@ data class GameState(val market: Market, val players: List<PlayerCards>){
         val state = GameState(result.market, players)
         return Game(state, result.player)
     }
-
 }

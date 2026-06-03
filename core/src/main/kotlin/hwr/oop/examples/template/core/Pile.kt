@@ -1,6 +1,9 @@
 package hwr.oop.examples.template.core
 
-data class Pile(val card: Card, val quantity: Int){
+data class Pile(internal val card: Card, internal val quantity: Int){
+    fun name() = card.name()
+    fun count() = quantity
+
     fun draw(): Pile = copy(quantity = quantity - 1)
     fun isEmpty() = quantity == 0
     fun isType(other: Card) = other == card

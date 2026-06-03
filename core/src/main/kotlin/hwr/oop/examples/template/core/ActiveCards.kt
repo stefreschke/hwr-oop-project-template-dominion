@@ -5,7 +5,7 @@ class ActiveCards(private val hand: List<Card> = emptyList(), private val used: 
         return hand.filter { it.isPlayable() }
     }
 
-    fun consume(card: Card): ActiveCards {
+    fun use(card: Card): ActiveCards {
         if(hand.contains(card)) {
             return ActiveCards(removeCard(card), used + card)
         }
@@ -18,7 +18,7 @@ class ActiveCards(private val hand: List<Card> = emptyList(), private val used: 
         return hand.take(idx) + hand.drop(idx + 1)
     }
 
-    fun update(cycle: PlayerCards): PlayerCards {
-        return cycle.insertTurnState(hand, used)
+    fun update(player: PlayerCards): PlayerCards {
+        return player.insertTurnState(hand, used)
     }
 }

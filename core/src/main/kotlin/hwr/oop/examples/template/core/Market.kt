@@ -1,6 +1,6 @@
 package hwr.oop.examples.template.core
 
-class Market(private val piles: Set<Pile>, private val emptyPiles: Int = 0) {
+class Market(internal val piles: Set<Pile>, private val emptyPiles: Int = 0) {
     fun emptyPiles(required: Int) = emptyPiles >= required
 
     fun piles(predicate: (Card) -> Boolean) = piles.filter{ predicate(it.card) }

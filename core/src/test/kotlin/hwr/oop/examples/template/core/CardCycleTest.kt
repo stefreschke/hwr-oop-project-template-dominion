@@ -42,7 +42,7 @@ class CardCycleTest {
     fun `playing a card removes it from hand`() {
         val player = ActivePlayer(
             PlayerCards(hand = listOf(Card.COPPER)),
-            PlayerStats(1, 1, 0)
+            Stats(1, 1, 0)
         )
 
         val result = player.play(Card.COPPER, GameState(Market(emptySet()), emptyList()))

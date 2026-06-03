@@ -1,17 +1,20 @@
 package hwr.oop.examples.template.core
 
-private val initialStats = PlayerStats(1, 1, 0)
+private val initialStats = Stats(1, 1, 0)
 
 class ActivePlayer(
-    internal val cards: PlayerCards = PlayerCards(),
-    internal val stats: PlayerStats = initialStats)
+    private val player: Player,
+    internal val stats: Stats = initialStats)
 {
-    fun canDoAction() = stats.actions > 0
-    fun canDoPurchase() = stats.purchases > 0
+    fun actions() = stats.actions
+    fun purchases() = stats.purchases
+    fun coins() = stats.money
+
+    fun id() = player.id
 
     fun play(card: Card, game: GameState): PlayResult {
         if(card.isPlayable()) {
-            return card.play(stats, cards, game)
+            return card.play(player, stats, game)
         }
 
         throw UnplayableCardException(card)
@@ -22,14 +25,14 @@ class ActivePlayer(
     fun purchase(card: Card): ActivePlayer {
         val cost = card.cost()
         if(canAfford(cost)){
-            return ActivePlayer(cards.insert(card), stats.change(0, -1, -cost))
+            return ActivePlayer(player.insert(card), stats.change(0, -1, -cost))
         }
 
         return this
     }
 
-    fun endTurn(): PlayerCards {
-        return cards.endTurn()
+    fun endTurn(): Player {
+        return player.endTurn()
     }
 
 }

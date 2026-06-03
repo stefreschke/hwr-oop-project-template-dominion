@@ -1,11 +1,11 @@
 package hwr.oop.examples.template.core
 
 class GameContext(
-    private val stats: PlayerStats,
-    private val cards: PlayerCards,
+    private val player: Player,
+    val stats: Stats,
     val state: GameState
 ) {
 
-    fun player() = ActivePlayer(cards, stats)
+    fun player() = player
 
 }
