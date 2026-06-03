@@ -3,6 +3,7 @@ package hwr.oop.examples.template.core
 class Game(private val state: GameState, internal val activePlayer: ActivePlayer) {
 
     fun piles() = state.piles()
+    fun players() = state.players + activePlayer.player
 
     fun next(): Game{
         return Game(state.nextState(activePlayer), initPlayer(state.nextPlayer()))
@@ -20,5 +21,7 @@ class Game(private val state: GameState, internal val activePlayer: ActivePlayer
     fun purchase(card: Card): Game{
         return state.purchase(activePlayer, card)
     }
+
+
 
 }

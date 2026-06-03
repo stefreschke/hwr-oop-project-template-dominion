@@ -17,27 +17,27 @@ data class Player(internal val id: String, internal val cards: PlayerCards){
     }
 
     fun use(card: Card): Player {
-        val activeCards = cards.extractActiveCards()
-        val cardsAfterConsuming = activeCards.use(card)
-        return Player(id, cardsAfterConsuming.update(cards))
+        return Player(id, cards.use(card))
     }
 
-    fun cards() = cards.extractActiveCards()
-
-    fun hand(): List<String> {
-
+    fun hand(): List<Card> {
+        return cards.hand
     }
 
     fun playArea(): List<String> {
-
+        return emptyList()
     }
 
-    fun discard(): List<String>{
-
+    fun discard(): List<Card> {
+        return cards.discard
     }
 
     fun deckSize(): Int {
+        return cards.stockSize() + cards.discardSize() + cards.handSize() + cards.usedSize()
+    }
 
+    fun holds(card: Card): Boolean {
+        return cards.inHand(card)
     }
 
 }

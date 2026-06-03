@@ -2,8 +2,9 @@ package hwr.oop.examples.template.core
 
 import java.util.UUID
 
-class GameInstance(private val game: Game) {
-    val id: String = UUID.randomUUID().toString()
+class GameInstance(private val game: Game, private val id: String) {
+
+    fun id() = id
 
     fun status(): String {
         TODO("Not yet implemented")
@@ -30,15 +31,27 @@ class GameInstance(private val game: Game) {
     }
 
     fun supply(): Set<Pile> {
-        return game.
+        return game.piles()
     }
 
      fun players(): List<Player> {
-        TODO("Not yet implemented")
+        return game.players()
     }
 
     fun effects() {
         TODO("Not yet implemented")
+    }
+
+    fun isActivePlayer(playerId: String): Boolean {
+        return game.activePlayer.id() == playerId
+    }
+
+    fun playTreasures(cardNames: List<String>): GameInstance {
+        val cards = CardHandler.cardsByNames(cardNames)
+        val updated = cards.fold(game) { current, card ->
+                requireTreasure(card); current.play(card)
+        }
+        return GameInstance(updated, id)
     }
 
     companion object{
@@ -50,13 +63,13 @@ class GameInstance(private val game: Game) {
             val market = createMarket(kingdomCards)
             val state = GameState(market, players.drop(1))
             val game = Game(state, ActivePlayer(players[0]))
-            return GameInstance(game)
+            val gId = UUID.randomUUID().toString()
+            return GameInstance(game, gId)
         }
 
         private fun createMarket(kingdomCards: List<String>): Market {
             return Market(emptySet())
         }
-
     }
 
 }
