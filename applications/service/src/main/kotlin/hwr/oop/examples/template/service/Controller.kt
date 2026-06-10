@@ -96,7 +96,7 @@ class Controller(
 		require(game.isActivePlayer(playActionRequest.playerId)) { "player ${playActionRequest.playerId} is not the active player" }
 
 
-		return map(game)
+		return map(game.playAction(playActionRequest.cardName))
 	}
 	
 	override fun playTreasures(

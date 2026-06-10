@@ -10,5 +10,5 @@ class Copper: CardDefinition {
     override val gold: Int = 1
     override val points: Int = 0
 
-    //override fun specialTextApplication(gameState: GameState): GameState = gameState
+    //override fun specialTextApplication(gameState: BoardState): BoardState = gameState
 }

@@ -1,27 +1,68 @@
 package hwr.oop.examples.template.core
 
-class Game(private val state: GameState, internal val activePlayer: ActivePlayer) {
+import kotlin.collections.orEmpty
+import kotlin.collections.plus
+
+class Game(
+    private val status: GameStatus,
+    private val state: BoardState,
+    internal val activePlayer: ActivePlayer) {
 
     fun piles() = state.piles()
     fun players() = state.players + activePlayer.player
 
-    fun next(): Game{
-        return Game(state.nextState(activePlayer), initPlayer(state.nextPlayer()))
-    }
+    fun isRunning() = status is GameStatus.Running
 
-    private fun initPlayer(player: Player): ActivePlayer {
-        return ActivePlayer(player)
+    fun next(): Game{
+        requireGameRunning(status)
+        return Game(GameStatus.Running, state.nextState(activePlayer), ActivePlayer.create(state.nextPlayer()))
     }
 
     fun play(card: Card): Game {
-        val result = activePlayer.play(card, state)
-        return Game(result.state, result.activePlayer)
+        requireGameRunning(status)
+        return when(val result = activePlayer.play(card, state)){
+            is PlayResult.Complete -> Game(GameStatus.Running, result.state, result.activePlayer)
+            is PlayResult.WaitingForChoice -> Game(GameStatus.WaitingForChoice(result.card, result.choices), state, activePlayer)
+        }
     }
 
     fun purchase(card: Card): Game{
+        requireGameRunning(status)
         return state.purchase(activePlayer, card)
     }
 
+    fun answer(answer: AnsweredChoice): Game{
+        require(status is GameStatus.WaitingForChoice)
+        val name = answer.playerID
+        val choices = status.choices[name] ?: throw NoPendingChoiceException(name)
+        choices.first().verify(answer)
 
+        val withAnswer = addAnswer(name, answer)
+        val withoutChoice = removeChoice(name)
+        if(withoutChoice.values.flatten().isEmpty()) {
+            val result = activePlayer.resume(status.card, state, withAnswer)
+            return Game(GameStatus.Running, result.state, result.activePlayer)
+        }
+
+        return Game(GameStatus.WaitingForChoice(status.card, withoutChoice, withAnswer), state, activePlayer)
+    }
+
+    private fun addAnswer(name: String, answer: AnsweredChoice): Map<String,List<AnsweredChoice>> {
+        require(status is GameStatus.WaitingForChoice)
+        return status.answered + (
+                    name to (status.answered[name].orEmpty() + answer)
+                )
+    }
+
+    private fun removeChoice(name: String): Map<String, List<PendingChoice>> {
+        require(status is GameStatus.WaitingForChoice)
+        val choices = status.choices[name]?.drop(1)
+        val others = status.choices.filterNot { it.key == name }
+        if(choices.isNullOrEmpty()) {
+            return others
+        }
+
+        return others + (name to choices)
+    }
 
 }

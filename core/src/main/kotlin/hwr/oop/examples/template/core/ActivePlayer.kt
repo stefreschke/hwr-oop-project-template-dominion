@@ -1,23 +1,34 @@
 package hwr.oop.examples.template.core
 
-private val initialStats = Stats(1, 1, 0)
 
 class ActivePlayer(
     internal val player: Player,
-    internal val stats: Stats = initialStats)
+    internal val stats: Stats)
 {
+    companion object {
+        fun create(player: Player): ActivePlayer {
+            return ActivePlayer(player, initialStats)
+        }
+
+        private val initialStats = Stats(1, 1, 0)
+    }
+
     fun actions() = stats.actions
     fun purchases() = stats.purchases
     fun coins() = stats.money
 
     fun id() = player.id
 
-    fun play(card: Card, game: GameState): PlayResult {
+    fun play(card: Card, game: BoardState): PlayResult {
         if(player.holds(card)) {
             return card.play(player, stats, game)
         }
 
         throw CardNotInHandException(card)
+    }
+
+    fun resume(card: Card, game: BoardState, answers: Map<String, List<AnsweredChoice>>): PlayResult.Complete {
+        return card.resume(GameContext(this, game), answers)
     }
 
     fun canAfford(cost: Int) = stats.money > cost

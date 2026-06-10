@@ -1,13 +1,15 @@
 package hwr.oop.examples.template.core
 
-enum class Card (private val card: CardDefinition) {
+enum class Card (private val card: CardDefinition, private val apiValue: String) {
 
-    COPPER(Copper()),
-    ESTATE(Estate());
+    COPPER(Copper(), "copper"),
+    ESTATE(Estate(), "estate"),;
 
     companion object {
-        fun fromName(name: String): Card? {
-            return entries.firstOrNull { it.name == name }
+        private val apiValues = entries.associateBy(Card::apiValue)
+
+        fun byName(name: String): Card {
+            return apiValues[name]?: throw NoSuchCardException(name)
         }
     }
 
@@ -21,15 +23,17 @@ enum class Card (private val card: CardDefinition) {
         return card.types.contains(CardType.TREASURE)
     }
 
-    fun play(player: Player, currentStats: Stats, state: GameState): PlayResult {
+    fun play(player: Player, currentStats: Stats, state: BoardState): PlayResult {
         val stats = currentStats.change(card.actions, card.buys, card.gold)
         val playerAfterDraw = player.draw(card.draw)
-        val context = GameContext(playerAfterDraw.use(this), stats, state)
-        return card.action(context)
+        val context = GameContext(ActivePlayer(playerAfterDraw.use(this), stats), state)
+        return card.beginAction(context)
+    }
+
+    fun resume(context: GameContext, choices: Map<String, List<AnsweredChoice>>): PlayResult.Complete {
+        return card.endAction(context, choices)
     }
 
     fun cost() = card.cost
-
     fun types() = card.types
-
 }

@@ -8,7 +8,7 @@ class GameAPITest {
     val _freePile = Pile(Card.COPPER, 1)
     val _pile = Pile(Card.ESTATE, 1)
     val _market = Market(setOf(_freePile, _pile))
-    val _game = Game(GameState(_market, listOf(PlayerCards())), ActivePlayer())
+    val _game = Game(BoardState(_market, listOf(PlayerCards())), ActivePlayer())
 
     @Test
     fun `playing copper gives player gold`() {

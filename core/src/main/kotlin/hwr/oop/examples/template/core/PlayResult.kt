@@ -1,3 +1,6 @@
 package hwr.oop.examples.template.core
 
-data class PlayResult(val state: GameState, val activePlayer: ActivePlayer)
+sealed interface PlayResult {
+    data class Complete(val state: BoardState, val activePlayer: ActivePlayer): PlayResult
+    data class WaitingForChoice(val card: Card, val choices: Map<String, List<PendingChoice>>, val answered: Map<String, List<PendingChoice>>): PlayResult
+}

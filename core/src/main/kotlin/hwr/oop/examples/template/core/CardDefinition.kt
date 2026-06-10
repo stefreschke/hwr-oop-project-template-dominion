@@ -10,9 +10,13 @@ interface CardDefinition {
     val gold: Int
     val points: Int
 
-    fun action(context: GameContext): PlayResult{
-        val state = context.state
+    fun beginAction(context: GameContext): PlayResult {
+        return PlayResult.WaitingForChoice(Card.byName(name), emptyMap())
+    }
+
+    fun endAction(context: GameContext, choices: Map<String, List<AnsweredChoice>>): PlayResult.Complete {
+        val state = context.state()
         val player = context.player()
-        return PlayResult(state, player)
+        return PlayResult.Complete(state, player)
     }
 }

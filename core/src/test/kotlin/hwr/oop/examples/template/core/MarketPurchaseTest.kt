@@ -70,7 +70,7 @@ class MarketPurchaseTest {
         val pile = Pile(Card.ESTATE, 1)
         val market = Market(setOf(pile))
         //when
-        val result = market.draw(pile)
+        val result = market.drawFrom(pile)
         //then
         assertThat(result.piles { true })
             .isEmpty()
@@ -81,7 +81,7 @@ class MarketPurchaseTest {
         val pile = Pile(Card.ESTATE, 1)
         val market = Market(setOf(pile))
 
-        val result = market.draw(pile)
+        val result = market.drawFrom(pile)
 
         assertThat(result.emptyPiles(1)).isTrue()
     }

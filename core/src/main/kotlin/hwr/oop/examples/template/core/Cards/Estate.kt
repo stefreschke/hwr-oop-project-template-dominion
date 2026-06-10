@@ -10,5 +10,5 @@ class Estate: CardDefinition{
     override val gold: Int = 0
     override val points: Int = 1
 
-    //override fun specialTextApplication(gameState: GameState): GameState = gameState
+    //override fun specialTextApplication(gameState: BoardState): BoardState = gameState
 }

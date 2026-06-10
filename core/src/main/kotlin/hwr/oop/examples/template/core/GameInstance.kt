@@ -46,12 +46,28 @@ class GameInstance(private val game: Game, private val id: String) {
         return game.activePlayer.id() == playerId
     }
 
+    fun playAction(cardName: String): GameInstance{
+        return GameInstance(game.play(Card.byName(cardName)), id)
+    }
+
     fun playTreasures(cardNames: List<String>): GameInstance {
-        val cards = CardHandler.cardsByNames(cardNames)
+        val cards = cardNames.map { Card.byName(it) }
         val updated = cards.fold(game) { current, card ->
-                requireTreasure(card); current.play(card)
+                requireTreasure(card)
+                val result = current.play(card)
+                if(!result.isRunning())
+                    throw NoTreasureException(card)
+                else result
         }
         return GameInstance(updated, id)
+    }
+
+    fun purchase(): GameInstance{
+        return this
+    }
+
+    fun makeChoice(answer: AnsweredChoice): GameInstance{
+        return GameInstance(game.answer(answer), id)
     }
 
     companion object{
@@ -61,8 +77,8 @@ class GameInstance(private val game: Game, private val id: String) {
         ): GameInstance {
             val players = players.map { Player(it, PlayerCards()) }
             val market = createMarket(kingdomCards)
-            val state = GameState(market, players.drop(1))
-            val game = Game(state, ActivePlayer(players[0]))
+            val state = BoardState(market, players.drop(1))
+            val game = Game(GameStatus.Running, state, ActivePlayer.create(players[0]))
             val gId = UUID.randomUUID().toString()
             return GameInstance(game, gId)
         }

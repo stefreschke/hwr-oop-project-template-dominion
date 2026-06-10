@@ -2,6 +2,7 @@ package hwr.oop.examples.template.service
 
 import hwr.oop.examples.template.FileSystemPersistence
 import hwr.oop.examples.template.FileSystemPersistenceConfiguration
+import hwr.oop.examples.template.core.DominionPersistence
 import okio.Path.Companion.toPath
 import okio.fakefilesystem.FakeFileSystem
 import org.junit.jupiter.api.BeforeEach
@@ -30,7 +31,7 @@ class ServiceFileSystemTest {
 		
 		@Bean
 		@Primary
-		fun persistence(): Any = persistence
+		fun persistence(): DominionPersistence = persistence
 	}
 	
 	@Autowired

@@ -3,6 +3,7 @@ package hwr.oop.examples.template.service
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import hwr.oop.examples.template.SqlPersistence
+import hwr.oop.examples.template.core.DominionPersistence
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -42,7 +43,7 @@ class ServiceSqlTest {
 		
 		@Bean
 		@Primary
-		fun persistence(): Any = persistence
+		fun persistence(): DominionPersistence = persistence
 	}
 	
 	@Autowired

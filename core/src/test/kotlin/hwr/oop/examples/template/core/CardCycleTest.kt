@@ -45,7 +45,7 @@ class CardCycleTest {
             Stats(1, 1, 0)
         )
 
-        val result = player.play(Card.COPPER, GameState(Market(emptySet()), emptyList()))
+        val result = player.play(Card.COPPER, BoardState(Market(emptySet()), emptyList()))
         val cards = result.activePlayer.endTurn()
 
         assertThat(cards.handSize()).isEqualTo(0)

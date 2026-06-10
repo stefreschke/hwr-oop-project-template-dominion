@@ -11,3 +11,9 @@ fun requireTreasure(
 ) {
     if (!card.isTreasure()) throw NoTreasureException(card)
 }
+
+fun requireGameRunning(
+    status: GameStatus
+){
+    if(status !is GameStatus.Running) throw UnresolvedChoiceException()
+}
