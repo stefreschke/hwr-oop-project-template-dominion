@@ -13,7 +13,7 @@ enum class Card (private val card: CardDefinition, private val apiValue: String)
         }
     }
 
-    fun name() = card.name
+    fun stringName() = card.name
 
     fun isAction(): Boolean {
         return card.types.contains(CardType.ACTION)
