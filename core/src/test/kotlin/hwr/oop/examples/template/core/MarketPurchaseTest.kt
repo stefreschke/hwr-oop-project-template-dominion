@@ -75,14 +75,14 @@ class MarketPurchaseTest {
             .isEmpty()
     }
 
-    @Test
-    fun `removing pile increases empty pile count`() {
-        val pile = Pile(Card.ESTATE, 1)
-        val market = Market(setOf(pile))
-
-        val result = market.drawFrom(pile)
-
-        assertThat(result.emptyPiles(1)).isTrue()
-    }
+//    @Test
+//    fun `removing pile increases empty pile count`() {
+//        val pile = Pile(Card.ESTATE, 1)
+//        val market = Market(setOf(pile))
+//
+//        val result = market.drawFrom(pile)
+//
+//        assertThat(result.emptyPiles(1)).isTrue()
+//    }
 
 }

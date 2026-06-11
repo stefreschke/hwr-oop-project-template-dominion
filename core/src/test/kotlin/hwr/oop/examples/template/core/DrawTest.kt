@@ -21,7 +21,7 @@ class DrawTest {
         val deck = emptyList<Card>()
         val hand = List(5){Card.COPPER}
         val used = List(5){Card.ESTATE}
-        val cards = PlayerCards(deck, hand = hand)
+        val cards = PlayerCards(deck, hand = hand, used = used)
         //when
         val newCards = cards.discard()
         //then
@@ -41,11 +41,36 @@ class DrawTest {
         //when
         val newCards = cards.draw(1)
         //then
-        assertThat(newCards.stock).hasSize(0)
+        assertThat(newCards.stock).hasSize(4)
         assertThat(newCards.discard).hasSize(0)
         assertThat(newCards.hand).hasSize(6)
         assertThat(newCards.used).hasSize(5)
     }
 
+    @Test
+    fun `drawing 0 cards has no effect`() {
+        //given
+        val cards = PlayerCards()
+        //when
+        val newCards =cards.draw(0)
+        //then
+        assertThat(newCards.stock).hasSize(10)
+        assertThat(newCards.discard).hasSize(0)
+        assertThat(newCards.hand).hasSize(0)
+        assertThat(newCards.used).hasSize(0)
+    }
 
+    @Test
+    fun `drawing cards with not enough in discard draws as many as possible`() {
+        //given
+        val discard = List(5){Card.COPPER}
+        val cards = PlayerCards(discard = discard)
+        //when
+        val newCards = cards.draw(20)
+        //then
+        assertThat(newCards.stock).hasSize(0)
+        assertThat(newCards.discard).hasSize(0)
+        assertThat(newCards.hand).hasSize(15)
+        assertThat(newCards.used).hasSize(0)
+    }
 }

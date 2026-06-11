@@ -3,7 +3,8 @@ package hwr.oop.examples.template.core
 enum class Card (private val card: CardDefinition, private val apiValue: String) {
 
     COPPER(Copper(), "copper"),
-    ESTATE(Estate(), "estate"),;
+    ESTATE(Estate(), "estate"),
+    TEST(Copper(), "test"),;
 
     companion object {
         private val apiValues = entries.associateBy(Card::apiValue)
