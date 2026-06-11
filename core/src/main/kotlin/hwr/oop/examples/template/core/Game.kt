@@ -21,7 +21,7 @@ class Game(
     fun play(card: Card): Game {
         requireGameRunning(status)
         return when(val result = activePlayer.play(card, state)){
-            is PlayResult.Complete -> Game(GameStatus.Running, result.state, result.activePlayer)
+            is PlayResult.Complete -> result.context.flush()
             is PlayResult.WaitingForChoice -> Game(GameStatus.WaitingForChoice(result.card, result.choices), state, activePlayer)
         }
     }
@@ -41,7 +41,7 @@ class Game(
         val withoutChoice = removeChoice(name)
         if(withoutChoice.values.flatten().isEmpty()) {
             val result = activePlayer.resume(status.card, state, withAnswer)
-            return Game(GameStatus.Running, result.state, result.activePlayer)
+            return result.context.flush()
         }
 
         return Game(GameStatus.WaitingForChoice(status.card, withoutChoice, withAnswer), state, activePlayer)
