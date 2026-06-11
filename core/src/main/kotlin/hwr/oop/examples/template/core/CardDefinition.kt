@@ -11,12 +11,10 @@ interface CardDefinition {
     val points: Int
 
     fun beginAction(context: GameContext): PlayResult {
-        return PlayResult.WaitingForChoice(Card.byName(name), emptyMap())
+        return PlayResult.Complete(context)
     }
 
     fun endAction(context: GameContext, choices: Map<String, List<AnsweredChoice>>): PlayResult.Complete {
-        val state = context.state()
-        val player = context.player()
-        return PlayResult.Complete(state, player)
+        return PlayResult.Complete(context)
     }
 }

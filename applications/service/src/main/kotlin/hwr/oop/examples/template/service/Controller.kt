@@ -32,7 +32,7 @@ class Controller(
 	}
 
 	private fun mapPlayers(players: List<Player>): List<PlayerState> {
-		return players.map { player -> PlayerState(player.id(), player.hand().map { it.name() }, player.playArea(), player.discard().map { it.name() }, player.deckSize()) }
+		return players.map { player -> PlayerState(player.id(), player.hand().map { it.stringName() }, player.playArea(), player.discard().map { it.stringName() }, player.deckSize()) }
 	}
 
 	private fun mapEffects(): List<ActiveEffect> {
