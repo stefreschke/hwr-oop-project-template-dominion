@@ -1,7 +1,7 @@
 package hwr.oop.examples.template.core
 
-class Copper: Card {
-    override val types: List<CardType> = listOf(CardType.TRESSURE)
+class Copper: CardDefinition {
+    override val types: List<CardType> = listOf(CardType.TREASURE)
     override val name: String = "copper"
     override val cost: Int = 0
     override val draw: Int = 0
@@ -10,5 +10,5 @@ class Copper: Card {
     override val gold: Int = 1
     override val points: Int = 0
 
-    //override fun specialTextApplication(gameState: GameState): GameState = gameState
+    //override fun specialTextApplication(gameState: BoardState): BoardState = gameState
 }

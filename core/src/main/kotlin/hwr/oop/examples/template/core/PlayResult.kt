@@ -1,6 +1,6 @@
 package hwr.oop.examples.template.core
 
 sealed interface PlayResult {
-    data class Success(val activePlayer: ActivePlayer, val players: List<PlayerCards>) : PlayResult
-    data object Failure : PlayResult
+    data class Complete(val state: BoardState, val activePlayer: ActivePlayer): PlayResult
+    data class WaitingForChoice(val card: Card, val choices: Map<String, List<PendingChoice>>, val answered: Map<String, List<PendingChoice>>): PlayResult
 }

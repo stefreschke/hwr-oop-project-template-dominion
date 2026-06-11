@@ -5,6 +5,7 @@ import hwr.oop.examples.template.FileSystemPersistenceConfiguration
 import hwr.oop.examples.template.SqlPersistence
 import hwr.oop.examples.template.config.ConfigLoader
 import hwr.oop.examples.template.config.PersistenceType
+import hwr.oop.examples.template.core.DominionPersistence
 import okio.Path.Companion.toPath
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean
@@ -14,7 +15,7 @@ import org.springframework.context.annotation.Configuration
 class Config {
 	
 	private val appConfig = ConfigLoader.load()
-	private val persistence: Any by lazy {
+	private val persistence: DominionPersistence by lazy {
 		when (appConfig.persistence) {
 			PersistenceType.SQL -> SqlPersistence(
 				appConfig.sql.jdbcUrl,
@@ -32,5 +33,5 @@ class Config {
 	
 	@Bean
 	@ConditionalOnMissingBean
-	fun persistence(): Any = persistence
+	fun persistence(): DominionPersistence = persistence
 }

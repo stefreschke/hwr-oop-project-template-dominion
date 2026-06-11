@@ -5,72 +5,50 @@ import org.junit.jupiter.api.Test
 
 class CardCycleTest {
 
-    private val _copperCount = 4
-    private val _estateCount = 3
-    private val _totalCount = _copperCount + _estateCount
-
-    private val _items: List<CardID> = List(_copperCount){CardID.COPPER} + List(_estateCount){CardID.ESTATE}
-    private val _cycle = PlayerCards(_items)
-
     @Test
-    fun drawTest() {
+    fun `used cards are preserved when drawing causes reshuffle`() {
         //given
-        val count = 5
+        val cards = PlayerCards(
+            stock = listOf(Card.COPPER),
+            discard = listOf(Card.COPPER, Card.COPPER),
+            hand = listOf(Card.COPPER),
+            used = listOf(Card.ESTATE)
+        )
         //when
-        val draw = _cycle.draw(count)
-        val hand = draw.handSize()
-        val discardResult = draw.discard()
-        val discardSize = discardResult.discardSize()
-        val stockSize = discardResult.stockSize()
+        val result = cards.draw(2)
         //then
-        assertThat(hand).isEqualTo(count)
-        assertThat(discardSize).isEqualTo(count)
-        assertThat(stockSize).isEqualTo(_totalCount - count)
+        assertThat(result.usedSize()).isEqualTo(1)
     }
 
     @Test
-    fun `drawing more than available results in all available`(){
-        //given
-        val count = _totalCount + 1
-        //when
-        val draw = _cycle.draw(count)
-        val stockSize = draw.stockSize()
-        val handSize = draw.handSize()
-        //then
-        val availableCount = _cycle.stockSize() + _cycle.discardSize()
-        assertThat(stockSize).isEqualTo(0)
-        assertThat(handSize).isEqualTo(availableCount)
+    fun `drawing preserves total card count`() {
+        val cards = PlayerCards(
+            stock = List(5) { Card.COPPER },
+            discard = List(5) { Card.ESTATE }
+        )
+
+        val result = cards.draw(3)
+
+        val totalBefore = 10
+        val totalAfter = result.stockSize() +
+                    result.discardSize() +
+                    result.handSize() +
+                    result.usedSize()
+
+        assertThat(totalAfter).isEqualTo(totalBefore)
     }
 
     @Test
-    fun `drawing with less then asked in stock shuffles discard`(){
-        //given
-        val emptyStock = _cycle.draw(_totalCount)
-        val discard = emptyStock.discard()
-        val count = 1
-        //when
-        val draw = discard.draw(count)
-        val handSize = draw.handSize()
-        val stockSize = draw.stockSize()
-        val discardSize = draw.discardSize()
-        //then
-        assertThat(handSize).isEqualTo(count)
-        assertThat(stockSize).isEqualTo(_totalCount - count)
-        assertThat(discardSize).isEqualTo(0)
+    fun `playing a card removes it from hand`() {
+        val player = ActivePlayer(
+            PlayerCards(hand = listOf(Card.COPPER)),
+            Stats(1, 1, 0)
+        )
+
+        val result = player.play(Card.COPPER, BoardState(Market(emptySet()), emptyList()))
+        val cards = result.activePlayer.endTurn()
+
+        assertThat(cards.handSize()).isEqualTo(0)
     }
 
-    @Test
-    fun discardTest(){
-        //given
-        val emptyStock = _cycle.draw(_totalCount)
-        val discard = emptyStock.discard()
-        //when
-        val handSize = discard.handSize()
-        val usedSize = discard.usedSize()
-        val discardSize = discard.discardSize()
-        //then
-        assertThat(handSize).isEqualTo(0)
-        assertThat(usedSize).isEqualTo(0)
-        assertThat(discardSize).isEqualTo(_totalCount)
-    }
 }

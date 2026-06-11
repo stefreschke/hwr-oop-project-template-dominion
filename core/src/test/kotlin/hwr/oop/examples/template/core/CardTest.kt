@@ -8,9 +8,9 @@ class CardTest {
     @Test
     fun createCardTest(){
         //given
-        val card = object: Card{
-            override val types: List<CardType> = listOf(CardType.TRESSURE)
-            override val name: String = "Card"
+        val cardDefinition = object: CardDefinition{
+            override val types: List<CardType> = listOf(CardType.TREASURE)
+            override val name: String = "CardDefinition"
             override val cost: Int = 3
 
             override val draw: Int = 0
@@ -22,14 +22,14 @@ class CardTest {
         }
 
         //
-        val name = card.name
-        val cost = card.cost
-        val additionalActions = card.actions
-        val additionalPurchases = card.buys
-        val additionalMoney = card.gold
-        val additionalPoints = card.points
+        val name = cardDefinition.name
+        val cost = cardDefinition.cost
+        val additionalActions = cardDefinition.actions
+        val additionalPurchases = cardDefinition.buys
+        val additionalMoney = cardDefinition.gold
+        val additionalPoints = cardDefinition.points
         //then
-        assertThat(name).isEqualTo("Card")
+        assertThat(name).isEqualTo("CardDefinition")
         assertThat(cost).isEqualTo(3)
         assertThat(additionalActions).isEqualTo(2)
         assertThat(additionalPurchases).isEqualTo(0)

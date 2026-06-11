@@ -1,42 +1,48 @@
 package hwr.oop.examples.template.core
 
+
 class ActivePlayer(
-    private val actions: Int,
-    private val purchases: Int,
-    private val money: Int,
-    private val cards: PlayerCards = PlayerCards())
-    : PurchaseResult
+    internal val player: Player,
+    internal val stats: Stats)
 {
-    fun canDoAction() = actions > 0
-    fun canDoPurchase() = purchases > 0
-
-    fun play(card: CardID, players: List<PlayerCards>): PlayResult {
-        if(card.isPlayable()) {
-            return playCard(card, players)
+    companion object {
+        fun create(player: Player): ActivePlayer {
+            return ActivePlayer(player, initialStats)
         }
 
-        return PlayResult.Failure
+        private val initialStats = Stats(1, 1, 0)
     }
 
-    private fun playCard(card: CardID, players: List<PlayerCards>): PlayResult {
-        val activeCards = cards.extractActiveCards()
-        val playState = activeCards.play(card)
-        val player = ActivePlayer(actions - 1, purchases, money, playState.update(cards))
-        return PlayResult.Success(player, players)
-    }
+    fun actions() = stats.actions
+    fun purchases() = stats.purchases
+    fun coins() = stats.money
 
-    fun canAfford(cost: Int) = money > cost
+    fun id() = player.id
 
-    fun purchase(card: CardID): ActivePlayer {
-        val cost = card.cost()
-        if(canAfford(cost)){
-            return ActivePlayer(actions, purchases - 1, money - cost, cards.insert(card))
+    fun play(card: Card, game: BoardState): PlayResult {
+        if(player.holds(card)) {
+            return card.play(player, stats, game)
         }
 
-        return this
+        throw CardNotInHandException(card)
     }
 
-    fun end(): PlayerCards {
-        return cards.discard()
+    fun resume(card: Card, game: BoardState, answers: Map<String, List<AnsweredChoice>>): PlayResult.Complete {
+        return card.resume(GameContext(this, game), answers)
     }
+
+    fun canAfford(cost: Int) = stats.money > cost
+
+    fun purchase(card: Card): ActivePlayer {
+        if(canAfford(card.cost())){
+            return ActivePlayer(player.insert(card), stats.change(0, -1, -card.cost()))
+        }
+
+        throw PurchaseException("not enough money")
+    }
+
+    fun endTurn(): Player {
+        return player.endTurn()
+    }
+
 }

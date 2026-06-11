@@ -1,6 +1,3 @@
 package hwr.oop.examples.template.core
 
-sealed interface PurchaseResult {
-    data class Success(val market: Market, val player: ActivePlayer): PurchaseResult
-    data class Failure(val reason: String): PurchaseResult
-}
+data class PurchaseResult(val market: Market, val player: ActivePlayer)
