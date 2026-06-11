@@ -2,12 +2,12 @@ package hwr.oop.examples.template.core
 
 val defaultInitialStock = List(4){ Card.COPPER } + List(3){ Card.ESTATE }
 
-class PlayerCards(private val stock: List<Card> = defaultInitialStock,
+class PlayerCards(internal val stock: List<Card> = defaultInitialStock,
                   internal val discard: List<Card> = emptyList(),
                   internal val hand: List<Card> = emptyList(),
                   internal val used: List<Card> = emptyList())
 {
-    fun endTurn(): PlayerCards {
+    fun discard(): PlayerCards {
         return PlayerCards(stock, discardedCards())
     }
 
